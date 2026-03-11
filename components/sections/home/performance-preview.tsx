@@ -1,14 +1,16 @@
-import { PerformanceCard } from "@/components/cards/performance-card";
+import { FunctionEventCard } from "@/components/functions/function-event-card";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { SectionShell } from "@/components/ui/section-shell";
-import { performances } from "@/lib/mocks";
+import { getActiveFunctionEvents, getWorkById } from "@/lib/catalog";
 
 export function PerformancePreviewSection() {
+  const events = getActiveFunctionEvents().slice(0, 3);
+
   return (
     <SectionShell
-      eyebrow="Próximas funciones"
-      title="Fechas destacadas con lectura rápida y CTA claros."
+      eyebrow="Proximas funciones"
+      title="Fechas destacadas con lectura rapida y CTA claros."
       description="Tarjetas mobile first, pensadas para calendario real, reservas y estados de disponibilidad cuando conectemos Supabase."
       action={
         <ButtonLink href="/funciones" size="md">
@@ -17,11 +19,11 @@ export function PerformancePreviewSection() {
       }
     >
       <Container className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {performances.slice(0, 3).map((performance) => (
-          <PerformanceCard
-            key={performance.id}
-            performance={performance}
-            showWorkTitle
+        {events.map((event) => (
+          <FunctionEventCard
+            key={event.id}
+            event={event}
+            workTitle={getWorkById(event.workId)?.title}
           />
         ))}
       </Container>

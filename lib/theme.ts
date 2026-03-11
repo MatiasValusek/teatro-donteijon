@@ -1,9 +1,4 @@
-import type {
-  NewsCategory,
-  PerformanceAvailability,
-  Tone,
-  WorkStage,
-} from "@/types/content";
+import type { NewsItem, Tone, WorkStatus } from "@/types/content";
 
 export const toneStyles: Record<
   Tone,
@@ -26,31 +21,17 @@ export const toneStyles: Record<
   },
 };
 
-export const workStageLabel: Record<WorkStage, string> = {
-  repertorio: "En repertorio",
-  estreno: "Nueva temporada",
-  laboratorio: "Laboratorio",
+export const workStatusLabel: Record<WorkStatus, string> = {
+  active: "En cartel",
+  archive: "Archivo",
 };
 
-export const performanceAvailabilityLabel: Record<
-  PerformanceAvailability,
-  string
-> = {
-  abierta: "Entradas abiertas",
-  ultimas: "Últimos lugares",
-  proxima: "Próximamente",
+export const workStatusStyles: Record<WorkStatus, string> = {
+  active: "border border-orange-300/20 bg-orange-400/10 text-orange-100",
+  archive: "border border-white/12 bg-white/8 text-white",
 };
 
-export const performanceAvailabilityStyles: Record<
-  PerformanceAvailability,
-  string
-> = {
-  abierta: "border border-emerald-300/20 bg-emerald-400/10 text-emerald-100",
-  ultimas: "border border-orange-300/20 bg-orange-400/10 text-orange-100",
-  proxima: "border border-white/15 bg-white/8 text-white",
-};
-
-export const newsCategoryLabel: Record<NewsCategory, string> = {
+export const newsCategoryLabel: Record<NewsItem["category"], string> = {
   estreno: "Estreno",
   gira: "Gira",
   proceso: "Proceso",

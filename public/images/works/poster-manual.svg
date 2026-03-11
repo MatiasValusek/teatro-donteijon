@@ -1,0 +1,20 @@
+<svg width="800" height="1000" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1000" fill="#090909"/>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="220" cy="170" r="170" fill="#FF8E3C" fill-opacity="0.24"/>
+  <circle cx="680" cy="820" r="210" fill="#7C1D30" fill-opacity="0.28"/>
+  <rect x="104" y="228" width="592" height="424" rx="22" fill="#0E0E0E" fill-opacity="0.62" stroke="#FFF4E7" stroke-opacity="0.1"/>
+  <path d="M184 560C248 466 312 418 398 418C490 418 556 476 624 582" stroke="#FFE3CC" stroke-opacity="0.34" stroke-width="12" stroke-linecap="round"/>
+  <path d="M194 620C270 544 344 504 420 504C500 504 562 548 618 626" stroke="#FFE3CC" stroke-opacity="0.18" stroke-width="8" stroke-linecap="round"/>
+  <text x="88" y="140" fill="#F7EBDD" font-family="Georgia, serif" font-size="26" letter-spacing="7.2">VAMOS DE NUEVO</text>
+  <text x="88" y="754" fill="#FFF8F1" font-family="Georgia, serif" font-size="78">Manual para</text>
+  <text x="88" y="834" fill="#FFF8F1" font-family="Georgia, serif" font-size="78">volver a escena</text>
+  <text x="90" y="902" fill="#E3CEC0" font-family="Arial, sans-serif" font-size="26" letter-spacing="3.2">TEATRO FISICO</text>
+  <defs>
+    <linearGradient id="bg" x1="82" y1="72" x2="700" y2="950" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#24120C"/>
+      <stop offset="0.52" stop-color="#140F11"/>
+      <stop offset="1" stop-color="#0A0A0A"/>
+    </linearGradient>
+  </defs>
+</svg>

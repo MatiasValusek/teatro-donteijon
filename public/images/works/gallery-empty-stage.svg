@@ -1,0 +1,16 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#080808"/>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="142" y="118" width="916" height="470" rx="28" fill="#0C0C0C" fill-opacity="0.72" stroke="#FFF4E7" stroke-opacity="0.08"/>
+  <path d="M214 566H984" stroke="#FFF4E7" stroke-opacity="0.14" stroke-width="4"/>
+  <path d="M214 516H984" stroke="#FFF4E7" stroke-opacity="0.1" stroke-width="4"/>
+  <path d="M214 466H984" stroke="#FFF4E7" stroke-opacity="0.14" stroke-width="4"/>
+  <path d="M0 724C188 664 392 634 600 634C808 634 1012 664 1200 724V800H0V724Z" fill="#0C0C0C" fill-opacity="0.88"/>
+  <defs>
+    <linearGradient id="bg" x1="88" y1="40" x2="1086" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22120D"/>
+      <stop offset="0.45" stop-color="#131012"/>
+      <stop offset="1" stop-color="#090909"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -14,43 +14,67 @@ export type Database = {
           id: string;
           slug: string;
           title: string;
-          summary: string;
-          description: string;
-          stage: string;
+          short_description: string;
+          full_description: string;
+          cover_image: string;
+          genre: string;
+          duration_minutes: number;
+          status: "active" | "archive";
+          director: string;
+          cast: string[];
+          featured: boolean;
+          artistic_text: string | null;
+          technical_sheet: string[];
+          gallery: Json;
           created_at: string;
         };
         Insert: {
           id?: string;
           slug: string;
           title: string;
-          summary: string;
-          description: string;
-          stage: string;
+          short_description: string;
+          full_description: string;
+          cover_image: string;
+          genre: string;
+          duration_minutes: number;
+          status: "active" | "archive";
+          director: string;
+          cast: string[];
+          featured?: boolean;
+          artistic_text?: string | null;
+          technical_sheet?: string[];
+          gallery?: Json;
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["works"]["Insert"]>;
         Relationships: [];
       };
-      performances: {
+      function_events: {
         Row: {
           id: string;
           work_id: string;
-          venue: string;
-          city: string;
-          starts_at: string;
-          availability: string;
+          date: string;
+          time: string;
+          venue_name: string;
+          venue_address: string;
+          reservation_url: string;
+          active: boolean;
           created_at: string;
         };
         Insert: {
           id?: string;
           work_id: string;
-          venue: string;
-          city: string;
-          starts_at: string;
-          availability: string;
+          date: string;
+          time: string;
+          venue_name: string;
+          venue_address: string;
+          reservation_url: string;
+          active?: boolean;
           created_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["performances"]["Insert"]>;
+        Update: Partial<
+          Database["public"]["Tables"]["function_events"]["Insert"]
+        >;
         Relationships: [];
       };
       news: {

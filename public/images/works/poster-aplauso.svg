@@ -1,0 +1,19 @@
+<svg width="800" height="1000" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1000" fill="#090909"/>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="646" cy="196" r="204" fill="#F45C2C" fill-opacity="0.28"/>
+  <circle cx="198" cy="776" r="246" fill="#8A1E2C" fill-opacity="0.22"/>
+  <path d="M0 760C132 676 244 626 360 610C506 590 634 634 800 742V1000H0V760Z" fill="#0C0C0C" fill-opacity="0.86"/>
+  <path d="M0 808C146 712 282 670 420 668C560 666 676 712 800 806" stroke="#FFF4E7" stroke-opacity="0.14" stroke-width="2"/>
+  <text x="84" y="140" fill="#F7EBDD" font-family="Georgia, serif" font-size="26" letter-spacing="7.2">VAMOS DE NUEVO</text>
+  <text x="84" y="676" fill="#FFF8F1" font-family="Georgia, serif" font-size="86">Lo que queda</text>
+  <text x="84" y="760" fill="#FFF8F1" font-family="Georgia, serif" font-size="86">del aplauso</text>
+  <text x="86" y="838" fill="#E3CEC0" font-family="Arial, sans-serif" font-size="26" letter-spacing="3.2">DRAMA CONTEMPORANEO</text>
+  <defs>
+    <linearGradient id="bg" x1="96" y1="44" x2="676" y2="964" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A120F"/>
+      <stop offset="0.52" stop-color="#170F10"/>
+      <stop offset="1" stop-color="#0A0A0A"/>
+    </linearGradient>
+  </defs>
+</svg>

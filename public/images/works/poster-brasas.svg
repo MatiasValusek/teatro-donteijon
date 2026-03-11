@@ -1,0 +1,20 @@
+<svg width="800" height="1000" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1000" fill="#090909"/>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="610" cy="208" r="160" fill="#FFB059" fill-opacity="0.18"/>
+  <circle cx="258" cy="772" r="214" fill="#F45C2C" fill-opacity="0.22"/>
+  <path d="M154 618C194 546 242 498 300 474C362 448 432 450 520 496C594 534 646 592 676 676" stroke="#FFD7B2" stroke-opacity="0.24" stroke-width="8" stroke-linecap="round"/>
+  <path d="M188 704C236 620 298 572 378 554C456 538 538 556 626 616" stroke="#FFD7B2" stroke-opacity="0.14" stroke-width="6" stroke-linecap="round"/>
+  <path d="M0 828C138 760 252 724 372 718C510 710 654 748 800 824V1000H0V828Z" fill="#0D0D0D" fill-opacity="0.88"/>
+  <text x="84" y="140" fill="#F7EBDD" font-family="Georgia, serif" font-size="26" letter-spacing="7.2">VAMOS DE NUEVO</text>
+  <text x="84" y="702" fill="#FFF8F1" font-family="Georgia, serif" font-size="76">Las brasas</text>
+  <text x="84" y="782" fill="#FFF8F1" font-family="Georgia, serif" font-size="76">siguen encendidas</text>
+  <text x="86" y="854" fill="#E3CEC0" font-family="Arial, sans-serif" font-size="24" letter-spacing="3">LABORATORIO DOCUMENTAL</text>
+  <defs>
+    <linearGradient id="bg" x1="112" y1="72" x2="664" y2="958" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#281810"/>
+      <stop offset="0.5" stop-color="#171112"/>
+      <stop offset="1" stop-color="#0A0A0A"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,36 +1,45 @@
 export type Tone = "ember" | "garnet" | "gold";
 
-export type WorkStage = "repertorio" | "estreno" | "laboratorio";
+export type WorkStatus = "active" | "archive";
 
-export type PerformanceAvailability = "abierta" | "ultimas" | "proxima";
-
-export type NewsCategory = "estreno" | "gira" | "proceso";
-
-export type Work = {
-  slug: string;
-  title: string;
-  summary: string;
-  description: string;
-  durationMinutes: number;
-  premiereSeason: string;
-  stage: WorkStage;
-  tone: Tone;
-  featured?: boolean;
-  tags: string[];
-  cast: string[];
-  direction: string;
+export type GalleryImage = {
+  src: string;
+  alt: string;
 };
 
-export type Performance = {
+export type Work = {
   id: string;
-  workSlug: Work["slug"];
-  venue: string;
-  city: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  coverImage: string;
+  coverAlt: string;
+  gallery: GalleryImage[];
+  genre: string;
+  durationMinutes: number;
+  status: WorkStatus;
+  director: string;
+  cast: string[];
+  featured: boolean;
+  artisticText?: string;
+  technicalSheet: string[];
+};
+
+export type FunctionEvent = {
+  id: string;
+  workId: Work["id"];
   date: string;
   time: string;
-  availability: PerformanceAvailability;
-  tags: string[];
-  ticketUrl?: string;
+  venueName: string;
+  venueAddress: string;
+  reservationUrl: string;
+  active: boolean;
+};
+
+export type FunctionEventWithWork = {
+  event: FunctionEvent;
+  work: Work;
 };
 
 export type NewsItem = {
@@ -38,7 +47,7 @@ export type NewsItem = {
   title: string;
   excerpt: string;
   publishedAt: string;
-  category: NewsCategory;
+  category: "estreno" | "gira" | "proceso";
   tone: Tone;
   tags: string[];
 };

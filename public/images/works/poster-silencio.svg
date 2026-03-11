@@ -1,0 +1,21 @@
+<svg width="800" height="1000" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="1000" fill="#090909"/>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="584" cy="196" r="168" fill="#E0C1A8" fill-opacity="0.08"/>
+  <circle cx="224" cy="786" r="246" fill="#5C2430" fill-opacity="0.24"/>
+  <rect x="150" y="238" width="500" height="370" rx="24" fill="#0D0D0D" fill-opacity="0.72" stroke="#FFF4E7" stroke-opacity="0.12"/>
+  <path d="M234 578H566" stroke="#FFF4E7" stroke-opacity="0.16" stroke-width="4"/>
+  <path d="M234 520H566" stroke="#FFF4E7" stroke-opacity="0.22" stroke-width="4"/>
+  <path d="M234 462H566" stroke="#FFF4E7" stroke-opacity="0.16" stroke-width="4"/>
+  <text x="84" y="140" fill="#F7EBDD" font-family="Georgia, serif" font-size="26" letter-spacing="7.2">VAMOS DE NUEVO</text>
+  <text x="84" y="718" fill="#FFF8F1" font-family="Georgia, serif" font-size="76">El borde</text>
+  <text x="84" y="798" fill="#FFF8F1" font-family="Georgia, serif" font-size="76">del silencio</text>
+  <text x="86" y="868" fill="#E3CEC0" font-family="Arial, sans-serif" font-size="24" letter-spacing="3.2">DRAMA POETICO</text>
+  <defs>
+    <linearGradient id="bg" x1="104" y1="64" x2="684" y2="958" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A1214"/>
+      <stop offset="0.55" stop-color="#121012"/>
+      <stop offset="1" stop-color="#090909"/>
+    </linearGradient>
+  </defs>
+</svg>
