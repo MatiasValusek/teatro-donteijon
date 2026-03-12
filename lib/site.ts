@@ -1,10 +1,4 @@
-export const siteConfig = {
-  name: "Vamos de Nuevo",
-  shortName: "VdN",
-  email: "hola@vamosdenuevo.ar",
-  city: "La Plata, Buenos Aires",
-  instagram: "https://instagram.com/vamosdenuevo.teatro",
-};
+export { siteConfig } from "@/data/site";
 
 export const primaryNavigation = [
   { href: "/", label: "Inicio" },
@@ -12,9 +6,7 @@ export const primaryNavigation = [
   { href: "/obras", label: "Obras" },
   { href: "/funciones", label: "Funciones" },
   { href: "/novedades", label: "Novedades" },
-];
-
-export const footerNavigation = [
-  ...primaryNavigation,
   { href: "/contacto", label: "Contacto" },
 ];
+
+export const footerNavigation = primaryNavigation;

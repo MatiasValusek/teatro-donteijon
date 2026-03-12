@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Panel } from "@/components/ui/panel";
 import {
   formatDayNumber,
   formatLongDate,
@@ -17,7 +18,13 @@ export function FunctionEventCard({
   workTitle,
 }: FunctionEventCardProps) {
   return (
-    <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(12,12,12,0.95))] p-5 sm:p-6">
+    <Panel
+      as="article"
+      variant="strong"
+      padding="md"
+      interactive
+      className="h-full overflow-hidden"
+    >
       <div className="flex gap-4">
         <div className="flex h-20 w-16 shrink-0 flex-col items-center justify-center rounded-[1.4rem] border border-orange-300/15 bg-[linear-gradient(160deg,rgba(244,92,44,0.18),rgba(15,15,15,0.98))] text-center">
           <span className="text-2xl font-semibold text-white">
@@ -48,15 +55,10 @@ export function FunctionEventCard({
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Badge variant="warm">Reservas abiertas</Badge>
-        <Link
-          href={event.reservationUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 px-5 text-sm font-semibold text-white hover:bg-white/8"
-        >
+        <ButtonLink href={event.reservationUrl} external variant="secondary" size="md">
           Reservar
-        </Link>
+        </ButtonLink>
       </div>
-    </article>
+    </Panel>
   );
 }

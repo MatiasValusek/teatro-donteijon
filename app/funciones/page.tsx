@@ -2,17 +2,21 @@ import { FunctionsHeader } from "@/components/functions/functions-header";
 import { FunctionsList } from "@/components/functions/functions-list";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
-import {
-  getActiveWorks,
-  getUpcomingFunctionEventsWithWorks,
-} from "@/lib/catalog";
+import { Panel } from "@/components/ui/panel";
+import { getPublishedWorks, getUpcomingFunctions } from "@/lib/queries";
 
-export default function FuncionesPage() {
-  const upcomingItems = getUpcomingFunctionEventsWithWorks();
-  const filterWorks = getActiveWorks().map((work) => ({
+export default async function FuncionesPage() {
+  const [upcomingItems, works] = await Promise.all([
+    getUpcomingFunctions(),
+    getPublishedWorks(),
+  ]);
+
+  const filterWorks = works
+    .filter((work) => work.status === "active")
+    .map((work) => ({
     id: work.id,
     title: work.title,
-  }));
+    }));
 
   return (
     <>
@@ -21,18 +25,18 @@ export default function FuncionesPage() {
         totalWorks={filterWorks.length}
       />
 
-      <section className="section-divider py-16 sm:py-20 lg:py-24">
+      <section className="section-divider section-space">
         <Container>
           <FunctionsList items={upcomingItems} works={filterWorks} />
         </Container>
       </section>
 
-      <section className="section-divider py-16 sm:py-20 lg:py-24">
+      <section className="section-divider section-space">
         <Container>
-          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(161,28,33,0.22),rgba(12,12,12,0.96))] p-6 sm:p-8 lg:p-10">
+          <Panel variant="cta" padding="lg">
             <div className="grid gap-6 lg:grid-cols-[1fr,auto] lg:items-end">
               <div className="max-w-3xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-orange-200/75">
+                <p className="section-eyebrow">
                   Siguiente paso
                 </p>
                 <h2 className="mt-4 text-4xl leading-none text-white sm:text-5xl">
@@ -48,7 +52,7 @@ export default function FuncionesPage() {
                 <ButtonLink href="/contacto">Contactar al grupo</ButtonLink>
               </div>
             </div>
-          </div>
+          </Panel>
         </Container>
       </section>
     </>

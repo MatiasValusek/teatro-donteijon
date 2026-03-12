@@ -10,7 +10,7 @@ type WorkHeroProps = {
 
 export function WorkHero({ work }: WorkHeroProps) {
   return (
-    <section className="pb-8 pt-12 sm:pb-10 sm:pt-16 lg:pb-12 lg:pt-20">
+    <section className="page-hero-space-compact">
       <Container>
         <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10">
           <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
@@ -22,7 +22,7 @@ export function WorkHero({ work }: WorkHeroProps) {
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,6,6,0.12),rgba(6,6,6,0.86))]" />
+            <div className="absolute inset-0 media-overlay-strong" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(244,92,44,0.2),transparent_28%)]" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
               <div className="max-w-3xl">

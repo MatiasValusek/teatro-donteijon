@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
+import { Panel } from "@/components/ui/panel";
 import { WorkDetails } from "@/components/works/work-details";
 import { WorkFunctions } from "@/components/works/work-functions";
 import { WorkGallery } from "@/components/works/work-gallery";
 import { WorkHero } from "@/components/works/work-hero";
-import { getFunctionsByWorkId, getWorkBySlug, getWorks } from "@/lib/catalog";
+import { getFunctionsByWorkId, getPublishedWorks, getWorkBySlug } from "@/lib/queries";
 
 type WorkDetailPageProps = {
   params: Promise<{
@@ -14,8 +15,10 @@ type WorkDetailPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return getWorks().map((work) => ({
+export async function generateStaticParams() {
+  const works = await getPublishedWorks();
+
+  return works.map((work) => ({
     slug: work.slug,
   }));
 }
@@ -24,7 +27,7 @@ export async function generateMetadata({
   params,
 }: WorkDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const work = getWorkBySlug(slug);
+  const work = await getWorkBySlug(slug);
 
   if (!work) {
     return {
@@ -42,13 +45,13 @@ export default async function ObraDetallePage({
   params,
 }: WorkDetailPageProps) {
   const { slug } = await params;
-  const work = getWorkBySlug(slug);
+  const work = await getWorkBySlug(slug);
 
   if (!work) {
     notFound();
   }
 
-  const relatedEvents = getFunctionsByWorkId(work.id);
+  const relatedEvents = await getFunctionsByWorkId(work.id);
 
   return (
     <>
@@ -57,12 +60,12 @@ export default async function ObraDetallePage({
       <WorkGallery work={work} />
       <WorkFunctions work={work} events={relatedEvents} />
 
-      <section className="section-divider py-16 sm:py-20 lg:py-24">
+      <section className="section-divider section-space">
         <Container>
-          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(161,28,33,0.22),rgba(12,12,12,0.96))] p-6 sm:p-8 lg:p-10">
+          <Panel variant="cta" padding="lg">
             <div className="grid gap-6 lg:grid-cols-[1fr,auto] lg:items-end">
               <div className="max-w-3xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-orange-200/75">
+                <p className="section-eyebrow">
                   Cierre
                 </p>
                 <h2 className="mt-4 text-4xl leading-none text-white sm:text-5xl">
@@ -77,7 +80,7 @@ export default async function ObraDetallePage({
                 <ButtonLink href="/funciones">Ver funciones generales</ButtonLink>
               </div>
             </div>
-          </div>
+          </Panel>
         </Container>
       </section>
     </>

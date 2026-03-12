@@ -1,24 +1,38 @@
-import { NewsCard } from "@/components/cards/news-card";
+import type { Metadata } from "next";
+import { FeaturedNewsCard } from "@/components/news/featured-news-card";
+import { NewsGrid } from "@/components/news/news-grid";
+import { NewsHeader } from "@/components/news/news-header";
 import { Container } from "@/components/ui/container";
-import { PageIntro } from "@/components/ui/page-intro";
-import { newsItems } from "@/lib/mocks";
+import { getFeaturedNewsPost, getPublishedNews } from "@/lib/queries";
 
-export default function NovedadesPage() {
+export const metadata: Metadata = {
+  title: "Novedades",
+  description:
+    "Estrenos, talleres, prensa, festivales y anuncios de Vamos de Nuevo.",
+};
+
+export default async function NovedadesPage() {
+  const [posts, featuredPost] = await Promise.all([
+    getPublishedNews(),
+    getFeaturedNewsPost(),
+  ]);
+  const remainingPosts = posts.filter((post) => post.slug !== featuredPost?.slug);
+
   return (
     <>
-      <PageIntro
-        eyebrow="Novedades"
-        title="Noticias del proceso, anuncios y movimiento del grupo."
-        description="La sección está pensada para escalar hacia artículos completos o sincronizarse con una tabla de novedades en Supabase sin rehacer la UI."
-      />
+      <NewsHeader posts={posts} />
 
-      <section className="section-divider py-16 sm:py-20 lg:py-24">
-        <Container className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {newsItems.map((item) => (
-            <div key={item.slug} id={item.slug}>
-              <NewsCard item={item} />
-            </div>
-          ))}
+      {featuredPost ? (
+        <section className="section-divider section-space">
+          <Container>
+            <FeaturedNewsCard post={featuredPost} />
+          </Container>
+        </section>
+      ) : null}
+
+      <section className="section-divider section-space">
+        <Container>
+          <NewsGrid posts={remainingPosts} />
         </Container>
       </section>
     </>

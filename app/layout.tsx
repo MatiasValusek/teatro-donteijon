@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -56,9 +55,7 @@ export default function RootLayout({
             <div className="absolute right-[-10rem] top-[18rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(161,28,33,0.18),transparent_65%)] blur-3xl" />
             <div className="absolute bottom-[-14rem] left-[-12rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,176,89,0.14),transparent_68%)] blur-3xl" />
           </div>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
+          <SiteChrome>{children}</SiteChrome>
         </div>
       </body>
     </html>

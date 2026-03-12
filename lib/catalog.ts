@@ -1,8 +1,10 @@
 import { functionEvents } from "@/data/functions";
+import { newsPosts } from "@/data/news";
 import { works } from "@/data/works";
 import type {
   FunctionEvent,
   FunctionEventWithWork,
+  NewsPost,
   Work,
 } from "@/types/content";
 import { isFutureDateTime, sortFunctionEvents } from "@/lib/utils";
@@ -17,6 +19,41 @@ export function getWorkBySlug(slug: string) {
 
 export function getWorkById(id: Work["id"]) {
   return works.find((work) => work.id === id);
+}
+
+function sortNewsPosts(posts: NewsPost[]) {
+  return [...posts].sort(
+    (left, right) =>
+      new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
+  );
+}
+
+export function getNewsPosts() {
+  return sortNewsPosts(newsPosts);
+}
+
+export function getNewsPostBySlug(slug: string) {
+  return newsPosts.find((post) => post.slug === slug);
+}
+
+export function getFeaturedNewsPost() {
+  const orderedPosts = getNewsPosts();
+
+  return orderedPosts.find((post) => post.featured) ?? orderedPosts[0];
+}
+
+export function getRecentNewsPosts(limit = 3, excludeSlug?: NewsPost["slug"]) {
+  return getNewsPosts()
+    .filter((post) => post.slug !== excludeSlug)
+    .slice(0, limit);
+}
+
+export function getRelatedNewsPosts(post: NewsPost, limit = 3) {
+  const orderedPosts = getNewsPosts().filter((item) => item.slug !== post.slug);
+  const sameCategory = orderedPosts.filter((item) => item.category === post.category);
+  const otherPosts = orderedPosts.filter((item) => item.category !== post.category);
+
+  return [...sameCategory, ...otherPosts].slice(0, limit);
 }
 
 export function getActiveWorks() {

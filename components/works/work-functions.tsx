@@ -2,6 +2,7 @@ import { FunctionEventCard } from "@/components/functions/function-event-card";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SectionHeader } from "@/components/ui/section-header";
 import type { FunctionEvent, Work } from "@/types/content";
 
 type WorkFunctionsProps = {
@@ -11,16 +12,13 @@ type WorkFunctionsProps = {
 
 export function WorkFunctions({ work, events }: WorkFunctionsProps) {
   return (
-    <section className="section-divider py-16 sm:py-20 lg:py-24">
+    <section className="section-divider section-space">
       <Container>
-        <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.34em] text-orange-200/75">
-            Funciones
-          </p>
-          <h2 className="mt-4 text-4xl leading-none text-white sm:text-5xl">
-            Proximas funciones de {work.title}.
-          </h2>
-        </div>
+        <SectionHeader
+          eyebrow="Funciones"
+          title={`Proximas funciones de ${work.title}.`}
+          description="La agenda de cada obra conserva el mismo sistema visual que la cartelera general para que la navegacion se sienta continua."
+        />
 
         <div className="mt-8">
           {events.length > 0 ? (

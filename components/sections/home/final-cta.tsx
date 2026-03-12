@@ -1,14 +1,15 @@
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
+import { Panel } from "@/components/ui/panel";
 
 export function FinalCtaSection() {
   return (
-    <section className="section-divider py-16 sm:py-20 lg:py-24">
+    <section className="section-divider section-space">
       <Container>
-        <div className="grain-mask overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(135deg,rgba(161,28,33,0.28),rgba(18,18,18,0.96))] p-6 sm:p-8 lg:p-10">
+        <Panel className="grain-mask overflow-hidden rounded-[2.5rem]" variant="cta" padding="lg">
           <div className="grid gap-8 lg:grid-cols-[1.1fr,0.9fr] lg:items-end">
             <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-orange-200/75">
+              <p className="section-eyebrow">
                 Cierre de home
               </p>
               <h2 className="mt-4 text-4xl leading-none text-white sm:text-5xl lg:text-6xl">
@@ -28,7 +29,7 @@ export function FinalCtaSection() {
               </ButtonLink>
             </div>
           </div>
-        </div>
+        </Panel>
       </Container>
     </section>
   );

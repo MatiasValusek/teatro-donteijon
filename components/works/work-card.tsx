@@ -1,6 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Panel } from "@/components/ui/panel";
 import { workStatusLabel } from "@/lib/theme";
 import type { Work } from "@/types/content";
 
@@ -10,7 +11,13 @@ type WorkCardProps = {
 
 export function WorkCard({ work }: WorkCardProps) {
   return (
-    <article className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(150deg,rgba(255,255,255,0.05),rgba(10,10,10,0.98))] p-4 sm:p-5">
+    <Panel
+      as="article"
+      variant="card"
+      padding="sm"
+      interactive
+      className="group flex h-full flex-col overflow-hidden"
+    >
       <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10">
         <div className="relative aspect-[4/5]">
           <Image
@@ -29,25 +36,24 @@ export function WorkCard({ work }: WorkCardProps) {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 flex flex-1 flex-col">
         <div className="flex flex-wrap gap-2">
           <Badge>{work.genre}</Badge>
           <Badge>{work.durationMinutes} min</Badge>
         </div>
-        <h3 className="mt-4 text-4xl leading-none text-white">{work.title}</h3>
+        <h3 className="mt-4 text-[2.3rem] leading-none text-white sm:text-4xl">
+          {work.title}
+        </h3>
         <p className="mt-3 text-sm leading-7 text-muted">
           {work.shortDescription}
         </p>
-      </div>
 
-      <div className="mt-6">
-        <Link
-          href={`/obras/${work.slug}`}
-          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 px-5 text-sm font-semibold text-white hover:bg-white/8"
-        >
-          Ver obra
-        </Link>
+        <div className="mt-6">
+          <ButtonLink href={`/obras/${work.slug}`} variant="secondary" size="md">
+            Ver obra
+          </ButtonLink>
+        </div>
       </div>
-    </article>
+    </Panel>
   );
 }

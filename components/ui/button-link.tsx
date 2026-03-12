@@ -20,7 +20,7 @@ const variantStyles = {
 };
 
 const sizeStyles = {
-  md: "min-h-11 px-5 text-sm",
+  md: "min-h-11 px-5 text-sm sm:text-[0.95rem]",
   lg: "min-h-12 px-6 text-base",
 };
 
@@ -40,7 +40,7 @@ export function ButtonLink({
       rel={external ? "noreferrer" : undefined}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center justify-center rounded-full font-semibold transition-transform hover:-translate-y-0.5",
+        "inline-flex items-center justify-center rounded-full font-semibold transition-transform hover:-translate-y-0.5 focus-visible:outline-none",
         variantStyles[variant],
         sizeStyles[size],
         className,

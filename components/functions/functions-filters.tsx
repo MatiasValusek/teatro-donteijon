@@ -1,4 +1,5 @@
 import { FilterPill } from "@/components/functions/filter-pill";
+import { Panel } from "@/components/ui/panel";
 import type { Work } from "@/types/content";
 
 type FunctionsFiltersProps = {
@@ -17,10 +18,10 @@ export function FunctionsFilters({
   const hasActiveFilter = selectedWorkId !== "all";
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(12,12,12,0.96))] p-4 sm:p-5">
+    <Panel variant="strong" padding="sm">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.34em] text-orange-200/75">
+          <p className="section-eyebrow">
             Filtro por obra
           </p>
           <p className="mt-2 text-sm leading-7 text-muted">
@@ -54,6 +55,6 @@ export function FunctionsFilters({
           />
         ))}
       </div>
-    </div>
+    </Panel>
   );
 }

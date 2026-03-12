@@ -1,0 +1,48 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#090909"/>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <ellipse cx="320" cy="168" rx="250" ry="150" fill="url(#warmGlow)" opacity="0.82"/>
+  <ellipse cx="1080" cy="206" rx="240" ry="160" fill="url(#emberGlow)" opacity="0.58"/>
+  <path d="M0 616C164 566 336 540 560 552C776 564 1004 614 1400 736V900H0V616Z" fill="url(#floor)"/>
+  <path d="M164 0H288V900H164V0Z" fill="url(#curtainLeft)" opacity="0.64"/>
+  <path d="M1112 0H1236V900H1112V0Z" fill="url(#curtainRight)" opacity="0.64"/>
+  <path d="M530 126C620 126 706 166 804 242L670 620C540 524 444 410 420 288C446 186 486 126 530 126Z" fill="url(#beam)" opacity="0.58"/>
+  <path d="M266 790C286 656 338 548 408 548C476 548 530 656 548 790H266Z" fill="#2A1714"/>
+  <path d="M536 812C562 620 652 470 760 470C866 470 956 620 982 812H536Z" fill="#3B1815"/>
+  <path d="M964 798C984 676 1036 578 1102 578C1166 578 1218 676 1238 798H964Z" fill="#261514"/>
+  <circle cx="410" cy="486" r="78" fill="#D48A63"/>
+  <circle cx="760" cy="392" r="100" fill="#E6A46E"/>
+  <circle cx="1102" cy="520" r="72" fill="#C56850"/>
+  <path d="M0 774C222 708 456 684 718 690C946 694 1168 726 1400 810V900H0V774Z" fill="#0C0C0C"/>
+  <defs>
+    <linearGradient id="bg" x1="700" y1="0" x2="700" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A1010"/>
+      <stop offset="0.46" stop-color="#121010"/>
+      <stop offset="1" stop-color="#090909"/>
+    </linearGradient>
+    <radialGradient id="warmGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 168) rotate(90) scale(150 250)">
+      <stop stop-color="#FFB56D"/>
+      <stop offset="1" stop-color="#FFB56D" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="emberGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1080 206) rotate(90) scale(160 240)">
+      <stop stop-color="#A92D31"/>
+      <stop offset="1" stop-color="#A92D31" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="700" y1="552" x2="700" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B1311"/>
+      <stop offset="1" stop-color="#0B0B0B"/>
+    </linearGradient>
+    <linearGradient id="curtainLeft" x1="226" y1="0" x2="226" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#601B1F"/>
+      <stop offset="1" stop-color="#170C0D"/>
+    </linearGradient>
+    <linearGradient id="curtainRight" x1="1174" y1="0" x2="1174" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#601B1F"/>
+      <stop offset="1" stop-color="#170C0D"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="612" y1="126" x2="612" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5B76A"/>
+      <stop offset="1" stop-color="#F5B76A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

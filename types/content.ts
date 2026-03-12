@@ -1,6 +1,6 @@
-export type Tone = "ember" | "garnet" | "gold";
+import type { DatabaseEnum } from "@/types/database";
 
-export type WorkStatus = "active" | "archive";
+export type WorkStatus = DatabaseEnum<"work_status">;
 
 export type GalleryImage = {
   src: string;
@@ -42,14 +42,20 @@ export type FunctionEventWithWork = {
   work: Work;
 };
 
-export type NewsItem = {
+export type NewsCategory = DatabaseEnum<"news_category">;
+
+export type NewsPost = {
+  id: string;
   slug: string;
   title: string;
   excerpt: string;
+  content: string;
+  coverImage: string;
+  coverAlt?: string;
+  gallery?: GalleryImage[];
+  category: NewsCategory;
   publishedAt: string;
-  category: "estreno" | "gira" | "proceso";
-  tone: Tone;
-  tags: string[];
+  featured: boolean;
 };
 
 export type ContactChannel = {

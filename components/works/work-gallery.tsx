@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
+import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import type { Work } from "@/types/content";
 
@@ -13,16 +14,13 @@ export function WorkGallery({ work }: WorkGalleryProps) {
   }
 
   return (
-    <section className="section-divider py-16 sm:py-20 lg:py-24">
+    <section className="section-divider section-space">
       <Container>
-        <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.34em] text-orange-200/75">
-            Galeria
-          </p>
-          <h2 className="mt-4 text-4xl leading-none text-white sm:text-5xl">
-            Imagenes mock para probar ritmo, escala y atmosfera.
-          </h2>
-        </div>
+        <SectionHeader
+          eyebrow="Galeria"
+          title="Imagenes mock para probar ritmo, escala y atmosfera."
+          description="La grilla se mantiene flexible para crecer con registros de escena, prensa o proceso sin cambiar la estructura base."
+        />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {work.gallery.slice(0, 4).map((image, index) => (
@@ -50,7 +48,7 @@ export function WorkGallery({ work }: WorkGalleryProps) {
                   }
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.08),rgba(10,10,10,0.52))]" />
+                <div className="absolute inset-0 media-overlay" />
               </div>
               <figcaption className="px-4 py-3 text-sm text-muted">
                 {image.alt}

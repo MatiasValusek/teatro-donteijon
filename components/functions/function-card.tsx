@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Badge } from "@/components/ui/badge";
+import { Panel } from "@/components/ui/panel";
 import { formatLongDate } from "@/lib/utils";
 import type { FunctionEventWithWork } from "@/types/content";
 
@@ -12,7 +13,13 @@ export function FunctionCard({ item }: FunctionCardProps) {
   const { event, work } = item;
 
   return (
-    <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(10,10,10,0.98))] p-4 sm:p-5">
+    <Panel
+      as="article"
+      variant="card"
+      padding="sm"
+      interactive
+      className="h-full overflow-hidden"
+    >
       <div className="grid gap-4 sm:grid-cols-[6.5rem,1fr] sm:items-start">
         <div className="relative overflow-hidden rounded-[1.4rem] border border-white/10">
           <div className="relative aspect-[4/5]">
@@ -23,7 +30,7 @@ export function FunctionCard({ item }: FunctionCardProps) {
               sizes="(max-width: 639px) 100vw, 104px"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,8,8,0.08),rgba(8,8,8,0.66))]" />
+            <div className="absolute inset-0 media-overlay" />
           </div>
         </div>
 
@@ -54,6 +61,6 @@ export function FunctionCard({ item }: FunctionCardProps) {
           Ver obra
         </ButtonLink>
       </div>
-    </article>
+    </Panel>
   );
 }

@@ -1,0 +1,27 @@
+<svg width="900" height="1080" viewBox="0 0 900 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1080" fill="#0A0A0A"/>
+  <rect width="900" height="1080" fill="url(#bg)"/>
+  <ellipse cx="618" cy="170" rx="220" ry="138" fill="url(#glow)" opacity="0.72"/>
+  <rect x="118" y="604" width="664" height="250" rx="24" fill="#1C1412"/>
+  <rect x="164" y="648" width="174" height="100" rx="16" fill="#2C1A16"/>
+  <rect x="362" y="648" width="186" height="100" rx="16" fill="#281816"/>
+  <rect x="572" y="648" width="164" height="100" rx="16" fill="#301A16"/>
+  <path d="M0 864C196 820 380 810 520 818C680 826 810 858 900 898V1080H0V864Z" fill="#0D0D0D"/>
+  <circle cx="260" cy="500" r="76" fill="#D28C66"/>
+  <circle cx="456" cy="444" r="86" fill="#E5AB76"/>
+  <circle cx="640" cy="514" r="70" fill="#C36E4E"/>
+  <path d="M144 540C170 430 220 336 260 336C302 336 336 430 352 540H144Z" fill="#2D1814"/>
+  <path d="M354 550C380 400 430 284 492 284C552 284 604 400 628 550H354Z" fill="#381814"/>
+  <path d="M560 552C580 448 620 364 672 364C722 364 766 448 784 552H560Z" fill="#251413"/>
+  <defs>
+    <linearGradient id="bg" x1="450" y1="0" x2="450" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#181111"/>
+      <stop offset="0.5" stop-color="#111010"/>
+      <stop offset="1" stop-color="#0A0A0A"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(618 170) rotate(90) scale(138 220)">
+      <stop stop-color="#FFB06D"/>
+      <stop offset="1" stop-color="#FFB06D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

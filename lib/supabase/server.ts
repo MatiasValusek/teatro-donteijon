@@ -1,8 +1,9 @@
+import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import { isSupabaseConfigured, supabaseConfig } from "@/lib/supabase/config";
 
-export function getSupabaseServerClient() {
+export const getSupabaseServerClient = cache(() => {
   if (!isSupabaseConfigured) {
     return null;
   }
@@ -13,4 +14,4 @@ export function getSupabaseServerClient() {
       autoRefreshToken: false,
     },
   });
-}
+});
