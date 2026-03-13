@@ -88,16 +88,12 @@ export async function saveGroupInfo(
     const existingGroupQuery = requestedId
       ? client
           .from("group_info")
-          .select(
-            "id, focus_areas, manifesto_pillars, history_image_url, history_image_alt",
-          )
+          .select("id")
           .eq("id", requestedId)
           .maybeSingle()
       : client
           .from("group_info")
-          .select(
-            "id, focus_areas, manifesto_pillars, history_image_url, history_image_alt",
-          )
+          .select("id")
           .order("created_at", { ascending: true })
           .limit(1)
           .maybeSingle();
@@ -109,28 +105,17 @@ export async function saveGroupInfo(
       return groupErrorState(existingGroupError);
     }
 
-    const mutationPayload = {
-      ...payload,
-      hero_image_alt: `Escena grupal de ${payload.name || "Vamos de Nuevo"}`,
-      history_image_url: payload.hero_image_url,
-      history_image_alt:
-        existingGroup?.history_image_alt ??
-        `Proceso de ensayo de ${payload.name || "Vamos de Nuevo"}`,
-      focus_areas: existingGroup?.focus_areas ?? [],
-      manifesto_pillars: existingGroup?.manifesto_pillars ?? [],
-    };
-
     if (existingGroup?.id) {
       const { error } = await client
         .from("group_info")
-        .update(mutationPayload)
+        .update(payload)
         .eq("id", existingGroup.id);
 
       if (error) {
         return groupErrorState(error);
       }
     } else {
-      const { error } = await client.from("group_info").insert(mutationPayload);
+      const { error } = await client.from("group_info").insert(payload);
 
       if (error) {
         return groupErrorState(error);

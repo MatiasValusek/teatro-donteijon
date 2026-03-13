@@ -66,12 +66,9 @@ function parseWorkPayload(formData: FormData) {
       director,
       cast,
       cover_image_url: coverImageUrl,
-      cover_image_alt: title ? `Poster de ${title}` : "Poster de la obra",
       featured,
       is_published: isPublished,
       sort_order: sortOrder.value,
-      artistic_text: null,
-      technical_sheet: [] as string[],
     },
   };
 }

@@ -5,13 +5,11 @@ import type {
 } from "@/types/inbox";
 import { getAdminQueryClient } from "@/lib/admin/auth";
 import {
-  CONTACT_MESSAGES_COLUMNS,
   FUNCTIONS_COLUMNS,
   formatArgentinaDateTimeLabel,
   GROUP_INFO_COLUMNS,
   MEMBERS_COLUMNS,
   NEWS_POSTS_COLUMNS,
-  RESERVATIONS_COLUMNS,
   WORKS_COLUMNS,
 } from "@/lib/queries/shared";
 
@@ -33,25 +31,13 @@ export type AdminNewsListItem = AdminNewsPostRow & {
 export async function getAdminDashboardSummary() {
   const client = await getAdminQueryClient();
 
-  const [
-    worksResult,
-    functionsResult,
-    newsResult,
-    membersResult,
-    groupResult,
-    reservationsResult,
-    contactMessagesResult,
-  ] =
+  const [worksResult, functionsResult, newsResult, membersResult, groupResult] =
     await Promise.all([
       client.from("works").select("id", { count: "exact", head: true }),
       client.from("functions").select("id", { count: "exact", head: true }),
       client.from("news_posts").select("id", { count: "exact", head: true }),
       client.from("members").select("id", { count: "exact", head: true }),
       client.from("group_info").select("id", { count: "exact", head: true }),
-      client.from("reservations").select("id", { count: "exact", head: true }),
-      client
-        .from("contact_messages")
-        .select("id", { count: "exact", head: true }),
     ]);
 
   return {
@@ -60,8 +46,8 @@ export async function getAdminDashboardSummary() {
     newsCount: newsResult.count ?? 0,
     membersCount: membersResult.count ?? 0,
     hasGroupInfo: (groupResult.count ?? 0) > 0,
-    reservationsCount: reservationsResult.count ?? 0,
-    contactMessagesCount: contactMessagesResult.count ?? 0,
+    reservationsCount: 0,
+    contactMessagesCount: 0,
   };
 }
 
@@ -236,76 +222,11 @@ export async function getAdminGroupInfo() {
 }
 
 export async function getAdminReservations(): Promise<AdminReservationListItem[]> {
-  const client = await getAdminQueryClient();
-
-  const [reservationsResult, functionsResult, worksResult] = await Promise.all([
-    client
-      .from("reservations")
-      .select(RESERVATIONS_COLUMNS)
-      .order("created_at", { ascending: false }),
-    client.from("functions").select("id, starts_at, venue_name"),
-    client.from("works").select("id, title"),
-  ]);
-
-  if (reservationsResult.error) {
-    throw reservationsResult.error;
-  }
-
-  if (functionsResult.error) {
-    throw functionsResult.error;
-  }
-
-  if (worksResult.error) {
-    throw worksResult.error;
-  }
-
-  const worksById = new Map(
-    (worksResult.data ?? []).map((row) => [row.id, row.title]),
-  );
-  const functionsById = new Map(
-    (functionsResult.data ?? []).map((row) => [
-      row.id,
-      `${formatArgentinaDateTimeLabel(row.starts_at)} - ${row.venue_name}`,
-    ]),
-  );
-
-  return (reservationsResult.data ?? []).map((row) => ({
-    id: row.id,
-    functionId: row.function_id,
-    workId: row.work_id,
-    workTitle: worksById.get(row.work_id) ?? "Obra sin asociar",
-    functionLabel:
-      functionsById.get(row.function_id) ?? "Funcion sin datos visibles",
-    fullName: row.full_name,
-    email: row.email,
-    phone: row.phone,
-    quantity: row.quantity,
-    message: row.message,
-    status: row.status,
-    createdAtLabel: formatArgentinaDateTimeLabel(row.created_at),
-  }));
+  return [];
 }
 
 export async function getAdminContactMessages(): Promise<
   AdminContactMessageListItem[]
 > {
-  const client = await getAdminQueryClient();
-
-  const { data, error } = await client
-    .from("contact_messages")
-    .select(CONTACT_MESSAGES_COLUMNS)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    throw error;
-  }
-
-  return (data ?? []).map((row) => ({
-    id: row.id,
-    fullName: row.full_name,
-    email: row.email,
-    subject: row.subject,
-    message: row.message,
-    createdAtLabel: formatArgentinaDateTimeLabel(row.created_at),
-  }));
+  return [];
 }

@@ -29,8 +29,8 @@ export function WorkFunctions({ work, events }: WorkFunctionsProps) {
             </div>
           ) : (
             <EmptyState
-              title="Actualmente esta obra no tiene funciones programadas."
-              description="Cuando haya nuevas fechas activas para esta obra, apareceran automaticamente en esta seccion sin cambiar la estructura de la ficha."
+              title="No hay funciones futuras programadas para esta obra."
+              description="Cuando haya nuevas fechas activas, van a aparecer automaticamente en esta seccion sin cambiar la estructura de la ficha."
               action={
                 <ButtonLink href="/funciones" variant="secondary" size="md">
                   Ver funciones generales

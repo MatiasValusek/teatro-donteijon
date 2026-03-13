@@ -5,7 +5,7 @@ import { NewsHeader } from "@/components/news/news-header";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { EmptyState } from "@/components/ui/empty-state";
-import { getFeaturedNewsPost, getPublishedNews } from "@/lib/queries";
+import { getPublishedNews } from "@/lib/queries";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = createPageMetadata({
@@ -16,11 +16,11 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function NovedadesPage() {
-  const [posts, featuredPost] = await Promise.all([
-    getPublishedNews(),
-    getFeaturedNewsPost(),
-  ]);
+  const posts = await getPublishedNews();
+  const featuredPost = posts.find((post) => post.featured) ?? posts[0] ?? null;
   const remainingPosts = posts.filter((post) => post.slug !== featuredPost?.slug);
+  const hasPosts = posts.length > 0;
+  const hasRemainingPosts = remainingPosts.length > 0;
 
   return (
     <>
@@ -36,11 +36,11 @@ export default async function NovedadesPage() {
 
       <section className="section-divider section-space">
         <Container>
-          {posts.length > 0 ? (
+          {hasRemainingPosts ? (
             <NewsGrid posts={remainingPosts} />
-          ) : (
+          ) : !hasPosts ? (
             <EmptyState
-              title="Todavia no hay novedades publicadas."
+              title="No hay novedades publicadas en este momento."
               description="Las publicaciones visibles van a aparecer aca apenas queden listas desde el panel."
               action={
                 <ButtonLink href="/contacto" variant="secondary" size="md">
@@ -48,7 +48,7 @@ export default async function NovedadesPage() {
                 </ButtonLink>
               }
             />
-          )}
+          ) : null}
         </Container>
       </section>
     </>

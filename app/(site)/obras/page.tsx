@@ -31,8 +31,8 @@ export default async function ObrasPage() {
             <WorksGrid works={orderedWorks} />
           ) : (
             <EmptyState
-              title="Todavia no hay obras publicadas."
-              description="Cuando el repertorio tenga contenido visible, esta pagina lo va a mostrar automaticamente en el mismo sistema visual."
+              title="No hay obras publicadas en este momento."
+              description="Cuando el repertorio tenga contenido visible, esta pagina lo va a mostrar automaticamente dentro del mismo sistema visual."
               action={
                 <ButtonLink href="/contacto" variant="secondary" size="md">
                   Contactar al grupo

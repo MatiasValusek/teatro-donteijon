@@ -1,17 +1,102 @@
 import { cache } from "react";
-import { newsPosts as newsPostsFallback } from "@/data/news";
-import { mapNewsPostRowToNewsPost } from "@/lib/queries/mappers";
 import {
-  type NewsGalleryRow,
-  NEWS_GALLERY_COLUMNS,
-  PUBLIC_NEWS_POSTS_COLUMNS,
-  groupRowsBy,
-  logSupabaseQueryError,
-  sortNewsForDisplay,
+  toArgentinaDateParts,
 } from "@/lib/queries/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { resolveStorageImageUrl } from "@/lib/supabase/storage";
+import type { NewsCategory, NewsPost } from "@/types/content";
 
-async function getPublishedNewsRows() {
+const NEWS_LIST_COLUMNS =
+  "id, slug, title, excerpt, cover_image_url, category, featured, published_at, created_at";
+
+const NEWS_DETAIL_COLUMNS =
+  "id, slug, title, excerpt, content, cover_image_url, category, featured, published_at, created_at";
+
+type NewsListRow = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  cover_image_url: string;
+  category: NewsCategory;
+  featured: boolean;
+  published_at: string | null;
+  created_at: string;
+};
+
+type NewsDetailRow = NewsListRow & {
+  content: string;
+};
+
+function mapNewsListRow(row: NewsListRow): NewsPost {
+  const publishedAt = row.published_at ?? row.created_at;
+  const parts = toArgentinaDateParts(publishedAt);
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    content: row.excerpt,
+    coverImage: resolveStorageImageUrl(row.cover_image_url),
+    coverAlt: row.title,
+    gallery: [],
+    category: row.category,
+    publishedAt: parts.date,
+    featured: row.featured,
+  };
+}
+
+function mapNewsDetailRow(row: NewsDetailRow): NewsPost {
+  return {
+    ...mapNewsListRow(row),
+    content: row.content,
+  };
+}
+
+export const getPublishedNews = cache(async () => {
+  const client = getSupabaseServerClient();
+
+  if (!client) {
+    return [];
+  }
+
+  const { data, error } = await client
+    .from("news_posts")
+    .select(NEWS_LIST_COLUMNS)
+    .eq("is_published", true)
+    .order("featured", { ascending: false })
+    .order("published_at", { ascending: false, nullsFirst: false });
+
+  if (error) {
+    throw new Error("No se pudieron obtener las novedades publicadas.");
+  }
+
+  return (data ?? []).map((row) => mapNewsListRow(row as NewsListRow));
+});
+
+export const getPublishedNewsSlugs = cache(async () => {
+  const client = getSupabaseServerClient();
+
+  if (!client) {
+    return [];
+  }
+
+  const { data, error } = await client
+    .from("news_posts")
+    .select("slug")
+    .eq("is_published", true)
+    .order("featured", { ascending: false })
+    .order("published_at", { ascending: false, nullsFirst: false });
+
+  if (error) {
+    throw new Error("No se pudieron obtener los slugs de novedades publicadas.");
+  }
+
+  return (data ?? []).map((row) => row.slug);
+});
+
+export const getNewsBySlug = cache(async (slug: string) => {
   const client = getSupabaseServerClient();
 
   if (!client) {
@@ -20,134 +105,32 @@ async function getPublishedNewsRows() {
 
   const { data, error } = await client
     .from("news_posts")
-    .select(PUBLIC_NEWS_POSTS_COLUMNS)
+    .select(NEWS_DETAIL_COLUMNS)
+    .eq("slug", slug)
     .eq("is_published", true)
-    .order("published_at", { ascending: false, nullsFirst: false })
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false });
+    .maybeSingle();
 
   if (error) {
-    throw error;
+    throw new Error("No se pudo obtener la novedad solicitada.");
   }
 
-  return data ?? [];
-}
-
-async function getGalleryMap(postIds: string[]) {
-  const client = getSupabaseServerClient();
-
-  if (!client || postIds.length === 0) {
-    return new Map<string, NewsGalleryRow[]>();
+  if (!data) {
+    return null;
   }
 
-  const { data, error } = await client
-    .from("news_gallery")
-    .select(NEWS_GALLERY_COLUMNS)
-    .in("news_post_id", postIds)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    throw error;
-  }
-
-  return groupRowsBy(data ?? [], (row) => row.news_post_id);
-}
-
-export const getPublishedNews = cache(async () => {
-  try {
-    const postRows = await getPublishedNewsRows();
-
-    if (postRows === null) {
-      return sortNewsForDisplay(newsPostsFallback);
-    }
-
-    const galleryMap = await getGalleryMap(postRows.map((row) => row.id));
-
-    return postRows.map((row) =>
-      mapNewsPostRowToNewsPost(row, galleryMap.get(row.id) ?? []),
-    );
-  } catch (error) {
-    logSupabaseQueryError("getPublishedNews", error);
-    return sortNewsForDisplay(newsPostsFallback);
-  }
+  return mapNewsDetailRow(data as NewsDetailRow);
 });
 
-export const getPublishedNewsSlugs = cache(async () => {
-  const client = getSupabaseServerClient();
+export const getFeaturedNews = cache(async () => {
+  const posts = await getPublishedNews();
 
-  if (!client) {
-    return newsPostsFallback.map((post) => post.slug);
-  }
-
-  try {
-    const { data, error } = await client
-      .from("news_posts")
-      .select("slug")
-      .eq("is_published", true)
-      .order("published_at", { ascending: false, nullsFirst: false })
-      .order("featured", { ascending: false })
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      logSupabaseQueryError("getPublishedNewsSlugs", error);
-      return newsPostsFallback.map((post) => post.slug);
-    }
-
-    return (data ?? []).map((row) => row.slug);
-  } catch (error) {
-    logSupabaseQueryError("getPublishedNewsSlugs", error);
-    return newsPostsFallback.map((post) => post.slug);
-  }
-});
-
-export const getNewsBySlug = cache(async (slug: string) => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return newsPostsFallback.find((post) => post.slug === slug) ?? null;
-  }
-
-  try {
-    const { data: row, error } = await client
-      .from("news_posts")
-      .select(PUBLIC_NEWS_POSTS_COLUMNS)
-      .eq("slug", slug)
-      .eq("is_published", true)
-      .maybeSingle();
-
-    if (error) {
-      logSupabaseQueryError("getNewsBySlug", error);
-      return newsPostsFallback.find((post) => post.slug === slug) ?? null;
-    }
-
-    if (!row) {
-      return null;
-    }
-
-    const { data: galleryRows, error: galleryError } = await client
-      .from("news_gallery")
-      .select(NEWS_GALLERY_COLUMNS)
-      .eq("news_post_id", row.id)
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: true });
-
-    if (galleryError) {
-      logSupabaseQueryError("getNewsBySlug:gallery", galleryError);
-      return mapNewsPostRowToNewsPost(row, []);
-    }
-
-    return mapNewsPostRowToNewsPost(row, galleryRows ?? []);
-  } catch (error) {
-    logSupabaseQueryError("getNewsBySlug", error);
-    return newsPostsFallback.find((post) => post.slug === slug) ?? null;
-  }
+  return posts.filter((post) => post.featured);
 });
 
 export const getFeaturedNewsPost = cache(async () => {
-  const posts = await getPublishedNews();
+  const posts = await getFeaturedNews();
 
-  return posts.find((post) => post.featured) ?? posts[0] ?? null;
+  return posts[0] ?? (await getPublishedNews())[0] ?? null;
 });
 
 export const getRelatedNewsPosts = cache(async (slug: string, limit = 3) => {

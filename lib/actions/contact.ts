@@ -7,19 +7,8 @@ import {
   ensureRequired,
   getPublicMutationClient,
   getString,
-  getSupabaseErrorMessage,
   hasFieldErrors,
 } from "@/lib/actions/shared";
-
-function contactErrorState(error: unknown): PublicFormState {
-  return {
-    status: "error",
-    message: getSupabaseErrorMessage(
-      error,
-      "No pudimos enviar tu mensaje. Intenta nuevamente en unos minutos.",
-    ),
-  };
-}
 
 export async function createContactMessage(
   _previousState: PublicFormState,
@@ -43,9 +32,7 @@ export async function createContactMessage(
     };
   }
 
-  const client = getPublicMutationClient();
-
-  if (!client) {
+  if (!getPublicMutationClient()) {
     return {
       status: "error",
       message:
@@ -53,26 +40,12 @@ export async function createContactMessage(
     };
   }
 
-  try {
-    const { error } = await client.from("contact_messages").insert({
-      full_name: fullName,
-      email,
-      subject,
-      message,
-    });
+  revalidatePath("/admin");
+  revalidatePath("/admin/contacto");
 
-    if (error) {
-      return contactErrorState(error);
-    }
-
-    revalidatePath("/admin");
-    revalidatePath("/admin/contacto");
-
-    return {
-      status: "success",
-      message: "Recibimos tu mensaje. Gracias por comunicarte con VdN.",
-    };
-  } catch (error) {
-    return contactErrorState(error);
-  }
+  return {
+    status: "error",
+    message:
+      "El formulario de contacto todavia no esta habilitado en el esquema actual de la base.",
+  };
 }

@@ -56,7 +56,6 @@ function parseNewsPayload(formData: FormData) {
       excerpt,
       content,
       cover_image_url: coverImageUrl,
-      cover_image_alt: title ? `Portada de ${title}` : "Portada de la novedad",
       category,
       featured,
       is_published: isPublished,

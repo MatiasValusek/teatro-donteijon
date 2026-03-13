@@ -4,7 +4,7 @@ import { FunctionsList } from "@/components/functions/functions-list";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { Panel } from "@/components/ui/panel";
-import { getPublishedWorks, getUpcomingFunctions } from "@/lib/queries";
+import { getUpcomingFunctions } from "@/lib/queries";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = createPageMetadata({
@@ -15,17 +15,19 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function FuncionesPage() {
-  const [upcomingItems, works] = await Promise.all([
-    getUpcomingFunctions(),
-    getPublishedWorks(),
-  ]);
+  const upcomingItems = await getUpcomingFunctions();
 
-  const filterWorks = works
-    .filter((work) => work.status === "active")
-    .map((work) => ({
-    id: work.id,
-    title: work.title,
-    }));
+  const filterWorks = Array.from(
+    new Map(
+      upcomingItems.map((item) => [
+        item.work.id,
+        {
+          id: item.work.id,
+          title: item.work.title,
+        },
+      ]),
+    ).values(),
+  ).sort((left, right) => left.title.localeCompare(right.title));
 
   return (
     <>

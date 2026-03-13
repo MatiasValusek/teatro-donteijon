@@ -1,168 +1,197 @@
 import { cache } from "react";
-import { functionEvents as functionsFallback } from "@/data/functions";
-import { works as worksFallback } from "@/data/works";
-import { mapFunctionRowToFunctionEvent } from "@/lib/queries/mappers";
 import {
-  logSupabaseQueryError,
   orderFunctionsWithWorks,
-  PUBLIC_FUNCTIONS_COLUMNS,
+  toArgentinaDateParts,
 } from "@/lib/queries/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { isFutureDateTime, sortFunctionEvents } from "@/lib/utils";
-import type { FunctionEventWithWork, Work } from "@/types/content";
-import { getPublishedWorks } from "./works";
+import { resolveStorageImageUrl } from "@/lib/supabase/storage";
+import type { FunctionEvent, FunctionEventWithWork, Work, WorkStatus } from "@/types/content";
 
-function fallbackFunctionsWithWorks() {
-  return sortFunctionEvents(functionsFallback).reduce<FunctionEventWithWork[]>(
-    (accumulator, event) => {
-      const work = worksFallback.find((item) => item.id === event.workId);
+const FUNCTION_COLUMNS =
+  "id, work_id, starts_at, venue_name, venue_address, reservation_url, ticket_price_text, is_active";
 
-      if (work) {
-        accumulator.push({ event, work });
-      }
+const FUNCTION_WORK_COLUMNS =
+  "id, slug, title, short_description, genre, duration_minutes, status, director, cast, cover_image_url, featured, sort_order, created_at";
 
-      return accumulator;
-    },
-    [],
-  );
+type FunctionRow = {
+  id: string;
+  work_id: string;
+  starts_at: string;
+  venue_name: string;
+  venue_address: string;
+  reservation_url: string | null;
+  ticket_price_text: string | null;
+  is_active: boolean;
+};
+
+type FunctionWorkRow = {
+  id: string;
+  slug: string;
+  title: string;
+  short_description: string;
+  genre: string;
+  duration_minutes: number;
+  status: WorkStatus;
+  director: string;
+  cast: string[];
+  cover_image_url: string;
+  featured: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+function mapFunction(row: FunctionRow): FunctionEvent {
+  const parts = toArgentinaDateParts(row.starts_at);
+
+  return {
+    id: row.id,
+    workId: row.work_id,
+    date: parts.date,
+    time: parts.time,
+    venueName: row.venue_name,
+    venueAddress: row.venue_address,
+    reservationUrl: row.reservation_url,
+    ticketPriceText: row.ticket_price_text,
+    active: row.is_active,
+  };
 }
 
-function fallbackFunctionsByWorkId(workId: string) {
-  return sortFunctionEvents(
-    functionsFallback.filter(
-      (event) =>
-        event.workId === workId &&
-        event.active &&
-        isFutureDateTime(event.date, event.time),
-    ),
-  );
+function mapFunctionWork(row: FunctionWorkRow): Work {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    shortDescription: row.short_description,
+    fullDescription: row.short_description,
+    coverImage: resolveStorageImageUrl(row.cover_image_url),
+    coverAlt: row.title,
+    gallery: [],
+    genre: row.genre,
+    durationMinutes: row.duration_minutes,
+    status: row.status,
+    director: row.director,
+    cast: row.cast,
+    featured: row.featured,
+    artisticText: undefined,
+    technicalSheet: [],
+  };
 }
 
-function combineFunctionsWithWorks(
-  events: ReturnType<typeof mapFunctionRowToFunctionEvent>[],
-  works: Work[],
-) {
-  const worksById = new Map(works.map((work) => [work.id, work]));
+async function getFunctionWorkMap(workIds: string[]) {
+  if (workIds.length === 0) {
+    return new Map<string, Work>();
+  }
 
-  return orderFunctionsWithWorks(
-    events.reduce<FunctionEventWithWork[]>((accumulator, event) => {
-      const work = worksById.get(event.workId);
+  const client = getSupabaseServerClient();
 
-      if (work) {
-        accumulator.push({ event, work });
-      }
+  if (!client) {
+    return new Map<string, Work>();
+  }
 
-      return accumulator;
-    }, []),
-  );
+  const { data, error } = await client
+    .from("works")
+    .select(FUNCTION_WORK_COLUMNS)
+    .in("id", workIds)
+    .eq("is_published", true);
+
+  if (error) {
+    throw new Error("No se pudo obtener la informacion basica de las obras.");
+  }
+
+  return new Map((data ?? []).map((row) => [row.id, mapFunctionWork(row as FunctionWorkRow)]));
 }
 
 export const getFunctions = cache(async () => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return fallbackFunctionsWithWorks();
+    return [];
   }
 
-  try {
-    const [works, functionsResult] = await Promise.all([
-      getPublishedWorks(),
-      client
-        .from("functions")
-        .select(PUBLIC_FUNCTIONS_COLUMNS)
-        .order("starts_at", { ascending: true }),
-    ]);
+  const { data, error } = await client
+    .from("functions")
+    .select(FUNCTION_COLUMNS)
+    .eq("is_active", true)
+    .order("starts_at", { ascending: true });
 
-    if (functionsResult.error) {
-      logSupabaseQueryError("getFunctions", functionsResult.error);
-      return fallbackFunctionsWithWorks();
-    }
-
-    if (!(functionsResult.data?.length)) {
-      return [];
-    }
-
-    return combineFunctionsWithWorks(
-      functionsResult.data.map(mapFunctionRowToFunctionEvent),
-      works,
-    );
-  } catch (error) {
-    logSupabaseQueryError("getFunctions", error);
-    return fallbackFunctionsWithWorks();
+  if (error) {
+    throw new Error("No se pudieron obtener las funciones activas.");
   }
+
+  const rows = (data ?? []) as FunctionRow[];
+  const workMap = await getFunctionWorkMap([...new Set(rows.map((row) => row.work_id))]);
+
+  return orderFunctionsWithWorks(
+    rows.reduce<FunctionEventWithWork[]>((accumulator, row) => {
+      const work = workMap.get(row.work_id);
+
+      if (work) {
+        accumulator.push({
+          event: mapFunction(row),
+          work,
+        });
+      }
+
+      return accumulator;
+    }, []),
+  );
 });
 
 export const getUpcomingFunctions = cache(async () => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return fallbackFunctionsWithWorks().filter(
-      ({ event }) => event.active && isFutureDateTime(event.date, event.time),
-    );
+    return [];
   }
 
-  try {
-    const [works, functionsResult] = await Promise.all([
-      getPublishedWorks(),
-      client
-        .from("functions")
-        .select(PUBLIC_FUNCTIONS_COLUMNS)
-        .eq("is_active", true)
-        .gte("starts_at", new Date().toISOString())
-        .order("starts_at", { ascending: true }),
-    ]);
+  const { data, error } = await client
+    .from("functions")
+    .select(FUNCTION_COLUMNS)
+    .eq("is_active", true)
+    .gte("starts_at", new Date().toISOString())
+    .order("starts_at", { ascending: true });
 
-    if (functionsResult.error) {
-      logSupabaseQueryError("getUpcomingFunctions", functionsResult.error);
-      return fallbackFunctionsWithWorks().filter(
-        ({ event }) => event.active && isFutureDateTime(event.date, event.time),
-      );
-    }
-
-    if (!(functionsResult.data?.length)) {
-      return [];
-    }
-
-    return combineFunctionsWithWorks(
-      functionsResult.data.map(mapFunctionRowToFunctionEvent),
-      works,
-    );
-  } catch (error) {
-    logSupabaseQueryError("getUpcomingFunctions", error);
-    return fallbackFunctionsWithWorks().filter(
-      ({ event }) => event.active && isFutureDateTime(event.date, event.time),
-    );
+  if (error) {
+    throw new Error("No se pudieron obtener las proximas funciones.");
   }
+
+  const rows = (data ?? []) as FunctionRow[];
+  const workMap = await getFunctionWorkMap([...new Set(rows.map((row) => row.work_id))]);
+
+  return orderFunctionsWithWorks(
+    rows.reduce<FunctionEventWithWork[]>((accumulator, row) => {
+      const work = workMap.get(row.work_id);
+
+      if (work) {
+        accumulator.push({
+          event: mapFunction(row),
+          work,
+        });
+      }
+
+      return accumulator;
+    }, []),
+  );
 });
 
 export const getFunctionsByWorkId = cache(async (workId: string) => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return fallbackFunctionsByWorkId(workId);
+    return [];
   }
 
-  try {
-    const { data, error } = await client
-      .from("functions")
-      .select(PUBLIC_FUNCTIONS_COLUMNS)
-      .eq("work_id", workId)
-      .eq("is_active", true)
-      .gte("starts_at", new Date().toISOString())
-      .order("starts_at", { ascending: true });
+  const { data, error } = await client
+    .from("functions")
+    .select(FUNCTION_COLUMNS)
+    .eq("work_id", workId)
+    .eq("is_active", true)
+    .gte("starts_at", new Date().toISOString())
+    .order("starts_at", { ascending: true });
 
-    if (error) {
-      logSupabaseQueryError("getFunctionsByWorkId", error);
-      return fallbackFunctionsByWorkId(workId);
-    }
-
-    if (!(data?.length)) {
-      return [];
-    }
-
-    return data.map(mapFunctionRowToFunctionEvent);
-  } catch (error) {
-    logSupabaseQueryError("getFunctionsByWorkId", error);
-    return fallbackFunctionsByWorkId(workId);
+  if (error) {
+    throw new Error("No se pudieron obtener las funciones de la obra.");
   }
+
+  return ((data ?? []) as FunctionRow[]).map(mapFunction);
 });

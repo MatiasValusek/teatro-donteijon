@@ -91,16 +91,11 @@ export function logSupabaseQueryError(scope: string, error: unknown) {
 }
 
 export type GroupInfoRow = TableRow<"group_info">;
-export type GroupMilestoneRow = TableRow<"group_milestones">;
-export type GroupGalleryRow = TableRow<"group_gallery">;
 export type MemberRow = TableRow<"members">;
 export type WorkRow = TableRow<"works">;
 export type WorkGalleryRow = TableRow<"work_gallery">;
 export type FunctionRow = TableRow<"functions">;
-export type ContactMessageRow = TableRow<"contact_messages">;
-export type ReservationRow = TableRow<"reservations">;
 export type NewsPostRow = TableRow<"news_posts">;
-export type NewsGalleryRow = TableRow<"news_gallery">;
 
 export type PublicWorkRow = Pick<
   WorkRow,
@@ -115,10 +110,7 @@ export type PublicWorkRow = Pick<
   | "director"
   | "cast"
   | "cover_image_url"
-  | "cover_image_alt"
   | "featured"
-  | "artistic_text"
-  | "technical_sheet"
 >;
 
 export type PublicFunctionRow = Pick<
@@ -141,7 +133,6 @@ export type PublicNewsPostRow = Pick<
   | "excerpt"
   | "content"
   | "cover_image_url"
-  | "cover_image_alt"
   | "category"
   | "featured"
   | "published_at"
@@ -149,22 +140,16 @@ export type PublicNewsPostRow = Pick<
 >;
 
 export const GROUP_INFO_COLUMNS =
-  "id, name, short_name, subtitle, history, manifesto, highlighted_quote, hero_image_url, hero_image_alt, history_image_url, history_image_alt, contact_email, press_email, instagram_url, phone, city, focus_areas, manifesto_pillars, created_at, updated_at";
-
-export const GROUP_MILESTONES_COLUMNS =
-  "id, group_info_id, label, title, description, sort_order, created_at";
-
-export const GROUP_GALLERY_COLUMNS =
-  "id, group_info_id, image_url, alt_text, caption, category, sort_order, created_at";
+  "id, name, short_name, subtitle, history, manifesto, highlighted_quote, hero_image_url, contact_email, press_email, instagram_url, phone, city, created_at, updated_at";
 
 export const MEMBERS_COLUMNS =
   "id, name, role, bio, image_url, sort_order, is_active, created_at, updated_at";
 
 export const WORKS_COLUMNS =
-  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, cover_image_alt, featured, is_published, sort_order, artistic_text, technical_sheet, created_at, updated_at";
+  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, featured, is_published, sort_order, created_at, updated_at";
 
 export const PUBLIC_WORKS_COLUMNS =
-  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, cover_image_alt, featured, artistic_text, technical_sheet";
+  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, featured";
 
 export const WORK_GALLERY_COLUMNS =
   "id, work_id, image_url, alt_text, sort_order, created_at";
@@ -182,13 +167,10 @@ export const RESERVATIONS_COLUMNS =
   "id, function_id, work_id, full_name, email, phone, quantity, message, status, created_at";
 
 export const NEWS_POSTS_COLUMNS =
-  "id, slug, title, excerpt, content, cover_image_url, cover_image_alt, category, featured, is_published, published_at, created_at, updated_at";
+  "id, slug, title, excerpt, content, cover_image_url, category, featured, is_published, published_at, created_at, updated_at";
 
 export const PUBLIC_NEWS_POSTS_COLUMNS =
-  "id, slug, title, excerpt, content, cover_image_url, cover_image_alt, category, featured, published_at, created_at";
-
-export const NEWS_GALLERY_COLUMNS =
-  "id, news_post_id, image_url, alt_text, sort_order, created_at";
+  "id, slug, title, excerpt, content, cover_image_url, category, featured, published_at, created_at";
 
 export function orderFunctionsWithWorks(
   items: Array<{ event: FunctionEvent; work: Work }>,

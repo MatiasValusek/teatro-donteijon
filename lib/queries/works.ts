@@ -1,143 +1,168 @@
 import { cache } from "react";
-import { works as worksFallback } from "@/data/works";
-import { mapWorkRowToWork } from "@/lib/queries/mappers";
-import {
-  PUBLIC_WORKS_COLUMNS,
-  type WorkGalleryRow,
-  WORK_GALLERY_COLUMNS,
-  groupRowsBy,
-  logSupabaseQueryError,
-  sortWorksForDisplay,
-} from "@/lib/queries/shared";
+import { groupRowsBy } from "@/lib/queries/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { resolveStorageImageUrl } from "@/lib/supabase/storage";
+import type { Work, WorkStatus } from "@/types/content";
 
-async function getPublishedWorkRows() {
+const WORK_LIST_COLUMNS =
+  "id, slug, title, short_description, genre, duration_minutes, status, director, cast, cover_image_url, featured, sort_order, created_at";
+
+const WORK_DETAIL_COLUMNS =
+  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, featured, sort_order, created_at";
+
+const WORK_GALLERY_BASE_COLUMNS =
+  "id, work_id, image_url, alt_text, sort_order, created_at";
+
+type WorkListRow = {
+  id: string;
+  slug: string;
+  title: string;
+  short_description: string;
+  genre: string;
+  duration_minutes: number;
+  status: WorkStatus;
+  director: string;
+  cast: string[];
+  cover_image_url: string;
+  featured: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+type WorkDetailRow = WorkListRow & {
+  full_description: string;
+};
+
+type WorkGalleryRow = {
+  id: string;
+  work_id: string;
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+  created_at: string;
+};
+
+function mapWorkListRow(row: WorkListRow): Work {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    shortDescription: row.short_description,
+    fullDescription: row.short_description,
+    coverImage: resolveStorageImageUrl(row.cover_image_url),
+    coverAlt: row.title,
+    gallery: [],
+    genre: row.genre,
+    durationMinutes: row.duration_minutes,
+    status: row.status,
+    director: row.director,
+    cast: row.cast,
+    featured: row.featured,
+    artisticText: undefined,
+    technicalSheet: [],
+  };
+}
+
+function mapWorkDetailRow(
+  row: WorkDetailRow,
+  galleryRows: WorkGalleryRow[],
+): Work {
+  return {
+    ...mapWorkListRow(row),
+    fullDescription: row.full_description,
+    gallery: galleryRows.map((image) => ({
+      src: resolveStorageImageUrl(image.image_url),
+      alt: image.alt_text,
+    })),
+  };
+}
+
+export const getPublishedWorks = cache(async () => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return null;
+    return [];
   }
 
   const { data, error } = await client
     .from("works")
-    .select(PUBLIC_WORKS_COLUMNS)
+    .select(WORK_LIST_COLUMNS)
     .eq("is_published", true)
     .order("featured", { ascending: false })
     .order("sort_order", { ascending: true })
-    .order("title", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error) {
-    throw error;
+    throw new Error("No se pudieron obtener las obras publicadas.");
   }
 
-  return data ?? [];
-}
+  return (data ?? []).map((row) => mapWorkListRow(row as WorkListRow));
+});
 
-async function getGalleryMap(workIds: string[]) {
-  const client = getSupabaseServerClient();
+export const getFeaturedWorks = cache(async () => {
+  const works = await getPublishedWorks();
 
-  if (!client || workIds.length === 0) {
-    return new Map<string, WorkGalleryRow[]>();
-  }
-
-  const { data, error } = await client
-    .from("work_gallery")
-    .select(WORK_GALLERY_COLUMNS)
-    .in("work_id", workIds)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    throw error;
-  }
-
-  return groupRowsBy(data ?? [], (row) => row.work_id);
-}
-
-export const getPublishedWorks = cache(async () => {
-  try {
-    const workRows = await getPublishedWorkRows();
-
-    if (workRows === null) {
-      return sortWorksForDisplay(worksFallback);
-    }
-
-    const galleryMap = await getGalleryMap(workRows.map((row) => row.id));
-
-    return workRows.map((row) => mapWorkRowToWork(row, galleryMap.get(row.id) ?? []));
-  } catch (error) {
-    logSupabaseQueryError("getPublishedWorks", error);
-    return sortWorksForDisplay(worksFallback);
-  }
+  return works.filter((work) => work.featured);
 });
 
 export const getPublishedWorkSlugs = cache(async () => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return worksFallback.map((work) => work.slug);
+    return [];
   }
 
-  try {
-    const { data, error } = await client
-      .from("works")
-      .select("slug")
-      .eq("is_published", true)
-      .order("featured", { ascending: false })
-      .order("sort_order", { ascending: true })
-      .order("title", { ascending: true });
+  const { data, error } = await client
+    .from("works")
+    .select("slug")
+    .eq("is_published", true)
+    .order("featured", { ascending: false })
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
 
-    if (error) {
-      logSupabaseQueryError("getPublishedWorkSlugs", error);
-      return worksFallback.map((work) => work.slug);
-    }
-
-    return (data ?? []).map((row) => row.slug);
-  } catch (error) {
-    logSupabaseQueryError("getPublishedWorkSlugs", error);
-    return worksFallback.map((work) => work.slug);
+  if (error) {
+    throw new Error("No se pudieron obtener los slugs de obras publicadas.");
   }
+
+  return (data ?? []).map((row) => row.slug);
 });
 
 export const getWorkBySlug = cache(async (slug: string) => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return worksFallback.find((work) => work.slug === slug) ?? null;
+    return null;
   }
 
-  try {
-    const { data: row, error } = await client
-      .from("works")
-      .select(PUBLIC_WORKS_COLUMNS)
-      .eq("slug", slug)
-      .eq("is_published", true)
-      .maybeSingle();
+  const { data: row, error } = await client
+    .from("works")
+    .select(WORK_DETAIL_COLUMNS)
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
 
-    if (error) {
-      logSupabaseQueryError("getWorkBySlug", error);
-      return worksFallback.find((work) => work.slug === slug) ?? null;
-    }
-
-    if (!row) {
-      return null;
-    }
-
-    const { data: galleryRows, error: galleryError } = await client
-      .from("work_gallery")
-      .select(WORK_GALLERY_COLUMNS)
-      .eq("work_id", row.id)
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: true });
-
-    if (galleryError) {
-      logSupabaseQueryError("getWorkBySlug:gallery", galleryError);
-      return mapWorkRowToWork(row, []);
-    }
-
-    return mapWorkRowToWork(row, galleryRows ?? []);
-  } catch (error) {
-    logSupabaseQueryError("getWorkBySlug", error);
-    return worksFallback.find((work) => work.slug === slug) ?? null;
+  if (error) {
+    throw new Error("No se pudo obtener la obra solicitada.");
   }
+
+  if (!row) {
+    return null;
+  }
+
+  const { data: galleryRows, error: galleryError } = await client
+    .from("work_gallery")
+    .select(WORK_GALLERY_BASE_COLUMNS)
+    .eq("work_id", row.id)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (galleryError) {
+    throw new Error("No se pudo obtener la galeria de la obra.");
+  }
+
+  return mapWorkDetailRow(
+    row as WorkDetailRow,
+    groupRowsBy(galleryRows ?? [], (galleryRow) => galleryRow.work_id).get(row.id) ??
+      [],
+  );
 });

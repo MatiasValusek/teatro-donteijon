@@ -7,7 +7,6 @@ import type { PublicFormState } from "@/lib/actions/public-form-state";
 import {
   ensureEmail,
   ensureRequired,
-  getMutationClient,
   getOptionalString,
   getPublicMutationClient,
   getRequiredInteger,
@@ -40,7 +39,7 @@ export async function createReservation(
   const email = getString(formData, "email");
   const phone = getString(formData, "phone");
   const quantity = getRequiredInteger(formData, "quantity", { min: 1 });
-  const message = getOptionalString(formData, "message");
+  getOptionalString(formData, "message");
 
   ensureRequired(fieldErrors, "function_id", functionId);
   ensureRequired(fieldErrors, "full_name", fullName);
@@ -102,26 +101,13 @@ export async function createReservation(
       };
     }
 
-    const { error } = await client.from("reservations").insert({
-      function_id: functionRow.id,
-      work_id: functionRow.work_id,
-      full_name: fullName,
-      email,
-      phone,
-      quantity: quantity.value,
-      message,
-    });
-
-    if (error) {
-      return reservationErrorState(error);
-    }
-
     revalidatePath("/admin");
     revalidatePath("/admin/reservas");
 
     return {
-      status: "success",
-      message: "Tu reserva fue enviada correctamente.",
+      status: "error",
+      message:
+        "Las reservas internas todavia no estan habilitadas en el esquema actual de la base.",
     };
   } catch (error) {
     return reservationErrorState(error);
@@ -136,23 +122,5 @@ export async function updateReservationStatus(formData: FormData) {
     redirect("/admin/reservas");
   }
 
-  try {
-    const client = await getMutationClient();
-    const { error } = await client
-      .from("reservations")
-      .update({
-        status,
-      })
-      .eq("id", reservationId);
-
-    if (error) {
-      throw error;
-    }
-
-    revalidatePath("/admin");
-    revalidatePath("/admin/reservas");
-    redirect("/admin/reservas?updated=1");
-  } catch {
-    redirect("/admin/reservas?error=1");
-  }
+  redirect("/admin/reservas?error=1");
 }

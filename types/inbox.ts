@@ -1,6 +1,4 @@
-import type { DatabaseEnum } from "@/types/database";
-
-export type ReservationStatus = DatabaseEnum<"reservation_status">;
+export type ReservationStatus = "pending" | "confirmed" | "cancelled";
 
 export type ReservationFunctionSummary = {
   id: string;

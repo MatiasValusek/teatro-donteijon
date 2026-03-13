@@ -6,8 +6,8 @@ import { NewsHero } from "@/components/news/news-hero";
 import { RelatedNews } from "@/components/news/related-news";
 import {
   getNewsBySlug,
+  getPublishedNews,
   getPublishedNewsSlugs,
-  getRelatedNewsPosts,
 } from "@/lib/queries";
 import {
   buildDescriptionFallback,
@@ -59,13 +59,23 @@ export default async function NovedadDetallePage({
   params,
 }: NewsDetailPageProps) {
   const { slug } = await params;
-  const post = await getNewsBySlug(slug);
+  const [post, posts] = await Promise.all([
+    getNewsBySlug(slug),
+    getPublishedNews(),
+  ]);
 
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = await getRelatedNewsPosts(post.slug, 3);
+  const relatedPosts = [
+    ...posts.filter(
+      (item) => item.slug !== post.slug && item.category === post.category,
+    ),
+    ...posts.filter(
+      (item) => item.slug !== post.slug && item.category !== post.category,
+    ),
+  ].slice(0, 3);
 
   return (
     <>

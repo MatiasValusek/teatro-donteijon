@@ -13,111 +13,39 @@ export type Database = {
         Row: {
           contact_email: string;
           created_at: string;
-          hero_image_alt: string;
           hero_image_url: string;
           highlighted_quote: string;
           history: string[];
-          history_image_alt: string;
-          history_image_url: string;
           id: string;
           instagram_url: string;
           manifesto: string[];
-          manifesto_pillars: string[];
           name: string;
           phone: string | null;
           press_email: string | null;
           short_name: string;
           city: string;
-          focus_areas: string[];
           subtitle: string;
           updated_at: string;
         };
         Insert: {
           contact_email: string;
           created_at?: string;
-          hero_image_alt: string;
           hero_image_url: string;
           highlighted_quote: string;
           history?: string[];
-          history_image_alt: string;
-          history_image_url: string;
           id?: string;
           instagram_url: string;
           manifesto?: string[];
-          manifesto_pillars?: string[];
           name: string;
           phone?: string | null;
           press_email?: string | null;
           short_name: string;
           city: string;
-          focus_areas?: string[];
           subtitle: string;
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["group_info"]["Insert"]>;
         Relationships: [];
-      };
-      group_milestones: {
-        Row: {
-          created_at: string;
-          description: string;
-          group_info_id: string;
-          id: string;
-          label: string;
-          sort_order: number;
-          title: string;
-        };
-        Insert: {
-          created_at?: string;
-          description: string;
-          group_info_id: string;
-          id?: string;
-          label: string;
-          sort_order?: number;
-          title: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["group_milestones"]["Insert"]>;
-        Relationships: [
-          {
-            foreignKeyName: "group_milestones_group_info_id_fkey";
-            columns: ["group_info_id"];
-            isOneToOne: false;
-            referencedRelation: "group_info";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      group_gallery: {
-        Row: {
-          alt_text: string;
-          caption: string;
-          category: string;
-          created_at: string;
-          group_info_id: string;
-          id: string;
-          image_url: string;
-          sort_order: number;
-        };
-        Insert: {
-          alt_text: string;
-          caption: string;
-          category: string;
-          created_at?: string;
-          group_info_id: string;
-          id?: string;
-          image_url: string;
-          sort_order?: number;
-        };
-        Update: Partial<Database["public"]["Tables"]["group_gallery"]["Insert"]>;
-        Relationships: [
-          {
-            foreignKeyName: "group_gallery_group_info_id_fkey";
-            columns: ["group_info_id"];
-            isOneToOne: false;
-            referencedRelation: "group_info";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       members: {
         Row: {
@@ -147,9 +75,7 @@ export type Database = {
       };
       works: {
         Row: {
-          artistic_text: string | null;
           cast: string[];
-          cover_image_alt: string;
           cover_image_url: string;
           created_at: string;
           director: string;
@@ -163,14 +89,11 @@ export type Database = {
           slug: string;
           sort_order: number;
           status: Database["public"]["Enums"]["work_status"];
-          technical_sheet: string[];
           title: string;
           updated_at: string;
         };
         Insert: {
-          artistic_text?: string | null;
           cast?: string[];
-          cover_image_alt: string;
           cover_image_url: string;
           created_at?: string;
           director: string;
@@ -184,7 +107,6 @@ export type Database = {
           slug: string;
           sort_order?: number;
           status?: Database["public"]["Enums"]["work_status"];
-          technical_sheet?: string[];
           title: string;
           updated_at?: string;
         };
@@ -255,74 +177,10 @@ export type Database = {
           },
         ];
       };
-      contact_messages: {
-        Row: {
-          created_at: string;
-          email: string;
-          full_name: string;
-          id: string;
-          message: string;
-          subject: string;
-        };
-        Insert: {
-          created_at?: string;
-          email: string;
-          full_name: string;
-          id?: string;
-          message: string;
-          subject: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["contact_messages"]["Insert"]>;
-        Relationships: [];
-      };
-      reservations: {
-        Row: {
-          created_at: string;
-          email: string;
-          full_name: string;
-          function_id: string;
-          id: string;
-          message: string | null;
-          phone: string;
-          quantity: number;
-          status: Database["public"]["Enums"]["reservation_status"];
-          work_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          email: string;
-          full_name: string;
-          function_id: string;
-          id?: string;
-          message?: string | null;
-          phone: string;
-          quantity: number;
-          status?: Database["public"]["Enums"]["reservation_status"];
-          work_id: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["reservations"]["Insert"]>;
-        Relationships: [
-          {
-            foreignKeyName: "reservations_function_id_fkey";
-            columns: ["function_id"];
-            isOneToOne: false;
-            referencedRelation: "functions";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "reservations_work_id_fkey";
-            columns: ["work_id"];
-            isOneToOne: false;
-            referencedRelation: "works";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       news_posts: {
         Row: {
           category: Database["public"]["Enums"]["news_category"];
           content: string;
-          cover_image_alt: string;
           cover_image_url: string;
           created_at: string;
           excerpt: string;
@@ -337,7 +195,6 @@ export type Database = {
         Insert: {
           category: Database["public"]["Enums"]["news_category"];
           content: string;
-          cover_image_alt: string;
           cover_image_url: string;
           created_at?: string;
           excerpt: string;
@@ -352,40 +209,11 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["news_posts"]["Insert"]>;
         Relationships: [];
       };
-      news_gallery: {
-        Row: {
-          alt_text: string;
-          created_at: string;
-          id: string;
-          image_url: string;
-          news_post_id: string;
-          sort_order: number;
-        };
-        Insert: {
-          alt_text: string;
-          created_at?: string;
-          id?: string;
-          image_url: string;
-          news_post_id: string;
-          sort_order?: number;
-        };
-        Update: Partial<Database["public"]["Tables"]["news_gallery"]["Insert"]>;
-        Relationships: [
-          {
-            foreignKeyName: "news_gallery_news_post_id_fkey";
-            columns: ["news_post_id"];
-            isOneToOne: false;
-            referencedRelation: "news_posts";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
       news_category: "anuncio" | "estreno" | "festival" | "prensa" | "taller";
-      reservation_status: "pending" | "confirmed" | "cancelled";
       work_status: "active" | "archive";
     };
     CompositeTypes: Record<string, never>;

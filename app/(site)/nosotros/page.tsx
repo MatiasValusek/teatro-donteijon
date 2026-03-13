@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { AboutCta } from "@/components/about/about-cta";
 import { AboutHero } from "@/components/about/about-hero";
 import { GroupGallery } from "@/components/about/group-gallery";
@@ -23,6 +24,10 @@ export default async function NosotrosPage() {
     getGroupGallery(),
     getMembers(),
   ]);
+
+  if (!groupInfo) {
+    notFound();
+  }
 
   return (
     <>
