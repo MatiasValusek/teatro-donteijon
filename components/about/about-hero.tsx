@@ -36,16 +36,18 @@ export function AboutHero({ group }: AboutHeroProps) {
                 {group.subtitle}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {group.focusAreas.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/12 bg-black/35 px-4 py-2 text-xs uppercase tracking-[0.28em] text-orange-100/90 backdrop-blur-sm"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
+              {group.focusAreas.length > 0 ? (
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {group.focusAreas.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-white/12 bg-black/35 px-4 py-2 text-xs uppercase tracking-[0.28em] text-orange-100/90 backdrop-blur-sm"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div className="lg:justify-self-end">

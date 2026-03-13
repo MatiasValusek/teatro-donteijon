@@ -107,10 +107,16 @@ export async function updateMember(
       .update(payload)
       .eq("id", id)
       .select("id")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return memberErrorState(error);
+    }
+
+    if (!data) {
+      return {
+        error: "El integrante que intentaste editar ya no existe.",
+      };
     }
 
     revalidatePath("/admin");

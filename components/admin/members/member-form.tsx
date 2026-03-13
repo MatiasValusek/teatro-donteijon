@@ -27,7 +27,12 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
     <form action={formAction} className="grid gap-6">
       {member ? <input type="hidden" name="id" value={member.id} /> : null}
 
-      <AdminFormNotice error={state.error} saved={saved} />
+      <AdminFormNotice
+        error={state.error}
+        fieldErrors={state.fieldErrors}
+        saved={saved}
+        successMessage="Integrante guardado correctamente."
+      />
 
       <AdminFormSection
         title="Informacion principal"
@@ -39,12 +44,14 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
             label="Nombre"
             defaultValue={member?.name}
             error={state.fieldErrors?.name}
+            required
           />
           <AdminInputField
             name="role"
             label="Rol"
             defaultValue={member?.role}
             error={state.fieldErrors?.role}
+            required
           />
         </div>
       </AdminFormSection>
@@ -59,6 +66,7 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
           rows={8}
           defaultValue={member?.bio}
           error={state.fieldErrors?.bio}
+          required
         />
 
         <ImageUploadField
@@ -67,6 +75,7 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
           folder="members"
           defaultValue={member?.image_url}
           error={state.fieldErrors?.image_url}
+          required
           previewAlt={member?.name ? `Retrato de ${member.name}` : "Imagen del integrante"}
           hint="Ideal para retratos o fotos de perfil del elenco y del equipo."
         />

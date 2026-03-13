@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { AdminFormState } from "./form-state";
 import {
+  ensureEmail,
+  ensureOptionalEmail,
   ensureRequired,
   getList,
   getMutationClient,
@@ -43,6 +45,8 @@ function parseGroupPayload(formData: FormData) {
   ensureRequired(fieldErrors, "contact_email", contactEmail);
   ensureRequired(fieldErrors, "instagram_url", instagramUrl);
   ensureRequired(fieldErrors, "city", city);
+  ensureEmail(fieldErrors, "contact_email", contactEmail);
+  ensureOptionalEmail(fieldErrors, "press_email", pressEmail);
 
   return {
     fieldErrors,
@@ -103,6 +107,12 @@ export async function saveGroupInfo(
 
     if (existingGroupError) {
       return groupErrorState(existingGroupError);
+    }
+
+    if (requestedId && !existingGroup?.id) {
+      return {
+        error: "Los datos del grupo que intentaste editar ya no existen.",
+      };
     }
 
     if (existingGroup?.id) {

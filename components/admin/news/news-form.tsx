@@ -29,7 +29,12 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
     <form action={formAction} className="grid gap-6">
       {post ? <input type="hidden" name="id" value={post.id} /> : null}
 
-      <AdminFormNotice error={state.error} saved={saved} />
+      <AdminFormNotice
+        error={state.error}
+        fieldErrors={state.fieldErrors}
+        saved={saved}
+        successMessage="Novedad guardada correctamente."
+      />
 
       <AdminFormSection
         title="Informacion principal"
@@ -41,6 +46,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
             label="Titulo"
             defaultValue={post?.title}
             error={state.fieldErrors?.title}
+            required
           />
           <AdminInputField
             name="slug"
@@ -48,6 +54,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
             defaultValue={post?.slug}
             hint="Se normaliza automaticamente a minusculas y guiones."
             error={state.fieldErrors?.slug}
+            required
           />
         </div>
 
@@ -63,6 +70,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
             { value: "taller", label: "Taller" },
           ]}
           error={state.fieldErrors?.category}
+          required
         />
       </AdminFormSection>
 
@@ -76,6 +84,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
           rows={4}
           defaultValue={post?.excerpt}
           error={state.fieldErrors?.excerpt}
+          required
         />
 
         <AdminTextareaField
@@ -84,6 +93,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
           rows={14}
           defaultValue={post?.content}
           error={state.fieldErrors?.content}
+          required
         />
 
         <ImageUploadField
@@ -92,6 +102,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
           folder="news"
           defaultValue={post?.cover_image_url}
           error={state.fieldErrors?.cover_image_url}
+          required
           previewAlt={post?.title ? `Portada de ${post.title}` : "Portada de la novedad"}
           hint="Sube la portada editorial o conserva el valor actual si todavia no hace falta reemplazarlo."
         />

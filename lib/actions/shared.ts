@@ -194,6 +194,17 @@ export function ensureEmail(
   }
 }
 
+export function ensureOptionalEmail(
+  fieldErrors: Record<string, string>,
+  key: string,
+  value: string | null,
+  message = "Ingresa un email valido.",
+) {
+  if (value && !isValidEmail(value.trim())) {
+    fieldErrors[key] = message;
+  }
+}
+
 export async function getMutationClient() {
   return getAdminQueryClient();
 }

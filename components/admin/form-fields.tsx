@@ -5,6 +5,7 @@ type BaseFieldProps = {
   label: string;
   hint?: string;
   error?: string;
+  required?: boolean;
 };
 
 type AdminInputFieldProps = BaseFieldProps & {
@@ -13,7 +14,6 @@ type AdminInputFieldProps = BaseFieldProps & {
   placeholder?: string;
   min?: number;
   step?: number;
-  required?: boolean;
 };
 
 export function AdminInputField({
@@ -32,6 +32,7 @@ export function AdminInputField({
     <label className="grid gap-2">
       <span className="text-sm font-medium text-white">
         {label}
+        {required ? <span className="text-orange-200"> *</span> : null}
       </span>
       <input
         name={name}
@@ -41,6 +42,7 @@ export function AdminInputField({
         min={min}
         step={step}
         required={required}
+        aria-invalid={error ? true : undefined}
         className={cn(
           "min-h-12 rounded-[1.1rem] border bg-black/35 px-4 text-sm text-white placeholder:text-muted/55",
           error ? "border-red-400/60" : "border-white/10",
@@ -63,6 +65,7 @@ export function AdminTextareaField({
   label,
   hint,
   error,
+  required,
   defaultValue,
   placeholder,
   rows = 6,
@@ -71,12 +74,15 @@ export function AdminTextareaField({
     <label className="grid gap-2">
       <span className="text-sm font-medium text-white">
         {label}
+        {required ? <span className="text-orange-200"> *</span> : null}
       </span>
       <textarea
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
         rows={rows}
+        required={required}
+        aria-invalid={error ? true : undefined}
         className={cn(
           "rounded-[1.1rem] border bg-black/35 px-4 py-3 text-sm leading-7 text-white placeholder:text-muted/55",
           error ? "border-red-400/60" : "border-white/10",
@@ -101,6 +107,7 @@ export function AdminSelectField({
   label,
   hint,
   error,
+  required,
   defaultValue,
   options,
 }: AdminSelectFieldProps) {
@@ -108,10 +115,13 @@ export function AdminSelectField({
     <label className="grid gap-2">
       <span className="text-sm font-medium text-white">
         {label}
+        {required ? <span className="text-orange-200"> *</span> : null}
       </span>
       <select
         name={name}
         defaultValue={defaultValue}
+        required={required}
+        aria-invalid={error ? true : undefined}
         className={cn(
           "min-h-12 rounded-[1.1rem] border bg-black/35 px-4 text-sm text-white",
           error ? "border-red-400/60" : "border-white/10",
@@ -161,10 +171,19 @@ export function AdminCheckboxField({
 type AdminFormNoticeProps = {
   error?: string;
   saved?: boolean;
+  successMessage?: string;
+  fieldErrors?: Record<string, string>;
 };
 
-export function AdminFormNotice({ error, saved }: AdminFormNoticeProps) {
-  if (!error && !saved) {
+export function AdminFormNotice({
+  error,
+  saved,
+  successMessage,
+  fieldErrors,
+}: AdminFormNoticeProps) {
+  const hasFieldErrors = Boolean(fieldErrors && Object.keys(fieldErrors).length > 0);
+
+  if (!error && !hasFieldErrors && !saved) {
     return null;
   }
 
@@ -172,12 +191,15 @@ export function AdminFormNotice({ error, saved }: AdminFormNoticeProps) {
     <div
       className={cn(
         "rounded-[1.2rem] border px-4 py-3 text-sm leading-7",
-        error
+        error || hasFieldErrors
           ? "border-red-400/40 bg-red-500/10 text-red-100"
           : "border-emerald-400/30 bg-emerald-500/10 text-emerald-100",
       )}
     >
-      {error ?? "Cambios guardados correctamente."}
+      {error ??
+        (hasFieldErrors
+          ? "Revisa los campos marcados antes de volver a guardar."
+          : successMessage ?? "Cambios guardados correctamente.")}
     </div>
   );
 }

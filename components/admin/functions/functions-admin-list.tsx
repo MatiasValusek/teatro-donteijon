@@ -21,7 +21,7 @@ export function FunctionsAdminList({ items }: FunctionsAdminListProps) {
         badges: [
           <FunctionActiveBadge key="active" active={item.is_active} />,
           <Badge key="reservation-mode" variant={item.reservation_url ? "soft" : "success"}>
-            {item.reservation_url ? "Canal externo" : "Reserva interna"}
+            {item.reservation_url ? "Canal externo" : "Sin enlace"}
           </Badge>,
         ],
         meta: [

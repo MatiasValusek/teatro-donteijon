@@ -35,7 +35,12 @@ export function FunctionForm({
     <form action={formAction} className="grid gap-6">
       {event ? <input type="hidden" name="id" value={event.id} /> : null}
 
-      <AdminFormNotice error={state.error} saved={saved} />
+      <AdminFormNotice
+        error={state.error}
+        fieldErrors={state.fieldErrors}
+        saved={saved}
+        successMessage="Funcion guardada correctamente."
+      />
 
       <AdminFormSection
         title="Obra y programacion"
@@ -51,6 +56,7 @@ export function FunctionForm({
               label: work.title,
             }))}
             error={state.fieldErrors?.work_id}
+            required
           />
           <AdminInputField
             name="starts_at"
@@ -58,6 +64,7 @@ export function FunctionForm({
             type="datetime-local"
             defaultValue={toDateTimeLocalValue(event?.starts_at)}
             error={state.fieldErrors?.starts_at}
+            required
           />
         </div>
       </AdminFormSection>
@@ -72,12 +79,14 @@ export function FunctionForm({
             label="Venue / sala"
             defaultValue={event?.venue_name}
             error={state.fieldErrors?.venue_name}
+            required
           />
           <AdminInputField
             name="venue_address"
             label="Direccion"
             defaultValue={event?.venue_address}
             error={state.fieldErrors?.venue_address}
+            required
           />
         </div>
       </AdminFormSection>
@@ -92,7 +101,7 @@ export function FunctionForm({
             label="URL de reservas"
             type="url"
             defaultValue={event?.reservation_url ?? ""}
-            hint="Opcional. Si queda vacio, la web usa reserva interna simple."
+            hint="Opcional. Si queda vacio, la funcion se publica sin enlace externo de reserva."
             error={state.fieldErrors?.reservation_url}
           />
           <AdminInputField

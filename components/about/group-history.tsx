@@ -29,24 +29,26 @@ export function GroupHistory({ group }: GroupHistoryProps) {
             ))}
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {group.milestones.map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(155deg,rgba(255,255,255,0.05),rgba(12,12,12,0.95))] p-4 sm:p-5"
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-orange-200/75">
-                  {item.label}
-                </p>
-                <h3 className="mt-3 text-2xl leading-none text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-muted">
-                  {item.description}
-                </p>
-              </article>
-            ))}
-          </div>
+          {group.milestones.length > 0 ? (
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {group.milestones.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(155deg,rgba(255,255,255,0.05),rgba(12,12,12,0.95))] p-4 sm:p-5"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-orange-200/75">
+                    {item.label}
+                  </p>
+                  <h3 className="mt-3 text-2xl leading-none text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-muted">
+                    {item.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="lg:sticky lg:top-28">

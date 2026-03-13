@@ -25,16 +25,18 @@ export function GroupManifesto({ group }: GroupManifestoProps) {
                 {group.highlightedQuote}
               </blockquote>
 
-              <div className="flex flex-wrap gap-2">
-                {group.manifestoPillars.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/12 bg-black/25 px-4 py-2 text-xs uppercase tracking-[0.3em] text-orange-100/85"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
+              {group.manifestoPillars.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {group.manifestoPillars.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-white/12 bg-black/25 px-4 py-2 text-xs uppercase tracking-[0.3em] text-orange-100/85"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div className="rounded-[2rem] border border-white/10 bg-black/25 p-5 sm:p-6 lg:p-8">

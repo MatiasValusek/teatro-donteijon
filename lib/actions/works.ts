@@ -10,6 +10,7 @@ import {
   getInteger,
   getList,
   getMutationClient,
+  getRequiredInteger,
   getStoredImageValue,
   getString,
   getSupabaseErrorMessage,
@@ -29,7 +30,7 @@ function parseWorkPayload(formData: FormData) {
   const cast = getList(formData, "cast");
   const featured = getBoolean(formData, "featured");
   const isPublished = getBoolean(formData, "is_published");
-  const duration = getInteger(formData, "duration_minutes", { min: 1 });
+  const duration = getRequiredInteger(formData, "duration_minutes", { min: 1 });
   const sortOrder = getInteger(formData, "sort_order", { min: 0, fallback: 0 });
   const status = getString(formData, "status") as DatabaseEnum<"work_status">;
 
@@ -149,10 +150,16 @@ export async function updateWork(
       .update(payload)
       .eq("id", id)
       .select("id, slug")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return workErrorState(error);
+    }
+
+    if (!data) {
+      return {
+        error: "La obra que intentaste editar ya no existe.",
+      };
     }
 
     revalidatePath("/admin");

@@ -18,7 +18,7 @@ export function WorkGallery({ work }: WorkGalleryProps) {
       <Container>
         <SectionHeader
           eyebrow="Galeria"
-          title="Imagenes mock para probar ritmo, escala y atmosfera."
+          title="Imagenes de escena, proceso y atmosfera de la obra."
           description="La grilla se mantiene flexible para crecer con registros de escena, prensa o proceso sin cambiar la estructura base."
         />
 

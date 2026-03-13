@@ -29,7 +29,12 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
     <form action={formAction} className="grid gap-6">
       {work ? <input type="hidden" name="id" value={work.id} /> : null}
 
-      <AdminFormNotice error={state.error} saved={saved} />
+      <AdminFormNotice
+        error={state.error}
+        fieldErrors={state.fieldErrors}
+        saved={saved}
+        successMessage="Obra guardada correctamente."
+      />
 
       <AdminFormSection
         title="Informacion principal"
@@ -41,6 +46,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
             label="Titulo"
             defaultValue={work?.title}
             error={state.fieldErrors?.title}
+            required
           />
           <AdminInputField
             name="slug"
@@ -48,6 +54,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
             defaultValue={work?.slug}
             hint="Se normaliza automaticamente a minusculas y guiones."
             error={state.fieldErrors?.slug}
+            required
           />
         </div>
 
@@ -57,12 +64,14 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
             label="Genero"
             defaultValue={work?.genre}
             error={state.fieldErrors?.genre}
+            required
           />
           <AdminInputField
             name="director"
             label="Direccion"
             defaultValue={work?.director}
             error={state.fieldErrors?.director}
+            required
           />
         </div>
       </AdminFormSection>
@@ -77,6 +86,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
           rows={4}
           defaultValue={work?.short_description}
           error={state.fieldErrors?.short_description}
+          required
         />
 
         <AdminTextareaField
@@ -85,6 +95,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
           rows={9}
           defaultValue={work?.full_description}
           error={state.fieldErrors?.full_description}
+          required
         />
 
         <AdminTextareaField
@@ -108,6 +119,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
             min={1}
             defaultValue={work?.duration_minutes}
             error={state.fieldErrors?.duration_minutes}
+            required
           />
           <AdminSelectField
             name="status"
@@ -118,6 +130,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
               { value: "archive", label: "Archivo" },
             ]}
             error={state.fieldErrors?.status}
+            required
           />
           <AdminInputField
             name="sort_order"
@@ -135,6 +148,7 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
           folder="works"
           defaultValue={work?.cover_image_url}
           error={state.fieldErrors?.cover_image_url}
+          required
           previewAlt={work?.title ? `Portada de ${work.title}` : "Portada de la obra"}
           hint="Sube la portada principal de la obra. Si ya tenes una URL o path cargado, tambien puedes mantenerlo."
         />

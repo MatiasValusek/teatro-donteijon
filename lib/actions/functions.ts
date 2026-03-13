@@ -14,8 +14,12 @@ import {
   hasFieldErrors,
 } from "./shared";
 
-async function getWorkSlug(workId: string) {
-  const client = await getMutationClient();
+type MutationClient = Awaited<ReturnType<typeof getMutationClient>>;
+
+async function getWorkSlug(
+  client: MutationClient,
+  workId: string,
+) {
   const { data } = await client
     .from("works")
     .select("slug")
@@ -23,6 +27,19 @@ async function getWorkSlug(workId: string) {
     .maybeSingle();
 
   return data?.slug ?? null;
+}
+
+async function getFunctionWorkId(
+  client: MutationClient,
+  id: string,
+) {
+  const { data } = await client
+    .from("functions")
+    .select("work_id")
+    .eq("id", id)
+    .maybeSingle();
+
+  return data?.work_id ?? null;
 }
 
 function functionErrorState(error: unknown): AdminFormState {
@@ -88,7 +105,7 @@ export async function createFunction(
       return functionErrorState(error);
     }
 
-    const workSlug = await getWorkSlug(workId);
+    const workSlug = await getWorkSlug(client, workId);
 
     revalidatePath("/admin");
     revalidatePath("/admin/funciones");
@@ -124,26 +141,38 @@ export async function updateFunction(
 
   try {
     const client = await getMutationClient();
+    const previousWorkId = await getFunctionWorkId(client, id);
     const { data, error } = await client
       .from("functions")
       .update(payload)
       .eq("id", id)
       .select("id")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return functionErrorState(error);
     }
 
-    const workSlug = await getWorkSlug(workId);
+    if (!data) {
+      return {
+        error: "La funcion que intentaste editar ya no existe.",
+      };
+    }
+
+    const relatedWorkIds = [...new Set([previousWorkId, workId])].filter(
+      (relatedWorkId): relatedWorkId is string => Boolean(relatedWorkId),
+    );
+    const workSlugs = await Promise.all(
+      relatedWorkIds.map((relatedWorkId) => getWorkSlug(client, relatedWorkId)),
+    );
 
     revalidatePath("/admin");
     revalidatePath("/admin/funciones");
     revalidatePath("/funciones");
 
-    if (workSlug) {
+    workSlugs.filter(Boolean).forEach((workSlug) => {
       revalidatePath(`/obras/${workSlug}`);
-    }
+    });
 
     redirect(`/admin/funciones/${data.id}?saved=1`);
   } catch (error) {

@@ -26,7 +26,12 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
     <form action={formAction} className="grid gap-6">
       {group ? <input type="hidden" name="id" value={group.id} /> : null}
 
-      <AdminFormNotice error={state.error} saved={saved} />
+      <AdminFormNotice
+        error={state.error}
+        fieldErrors={state.fieldErrors}
+        saved={saved}
+        successMessage="Datos del grupo guardados correctamente."
+      />
 
       <AdminFormSection
         title="Identidad"
@@ -38,12 +43,14 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
             label="Nombre"
             defaultValue={group?.name}
             error={state.fieldErrors?.name}
+            required
           />
           <AdminInputField
             name="short_name"
             label="Nombre corto"
             defaultValue={group?.short_name}
             error={state.fieldErrors?.short_name}
+            required
           />
         </div>
 
@@ -52,6 +59,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           label="Subtitulo"
           defaultValue={group?.subtitle}
           error={state.fieldErrors?.subtitle}
+          required
         />
       </AdminFormSection>
 
@@ -65,6 +73,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           rows={3}
           defaultValue={group?.highlighted_quote}
           error={state.fieldErrors?.highlighted_quote}
+          required
         />
         <AdminTextareaField
           name="history"
@@ -73,6 +82,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           defaultValue={toTextareaValue(group?.history)}
           error={state.fieldErrors?.history}
           hint="Una idea o parrafo por linea."
+          required
         />
 
         <AdminTextareaField
@@ -82,6 +92,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           defaultValue={toTextareaValue(group?.manifesto)}
           error={state.fieldErrors?.manifesto}
           hint="Una idea o parrafo por linea."
+          required
         />
       </AdminFormSection>
 
@@ -95,6 +106,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           folder="group"
           defaultValue={group?.hero_image_url}
           error={state.fieldErrors?.hero_image_url}
+          required
           previewAlt={
             group?.name
               ? `Imagen principal de ${group.name}`
@@ -115,6 +127,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
             type="email"
             defaultValue={group?.contact_email}
             error={state.fieldErrors?.contact_email}
+            required
           />
           <AdminInputField
             name="press_email"
@@ -131,6 +144,7 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
             type="url"
             defaultValue={group?.instagram_url}
             error={state.fieldErrors?.instagram_url}
+            required
           />
           <AdminInputField
             name="phone"
@@ -144,10 +158,11 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
           label="Ciudad"
           defaultValue={group?.city}
           error={state.fieldErrors?.city}
+          required
         />
       </AdminFormSection>
 
-      <AdminActions cancelHref="/admin/obras" submitLabel="Guardar grupo" />
+      <AdminActions cancelHref="/admin" submitLabel="Guardar grupo" />
     </form>
   );
 }

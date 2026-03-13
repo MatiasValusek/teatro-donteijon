@@ -17,6 +17,7 @@ type ImageUploadFieldProps = {
   hint?: string;
   error?: string;
   previewAlt?: string;
+  required?: boolean;
 };
 
 async function parseUploadResponse(response: Response) {
@@ -48,6 +49,7 @@ export function ImageUploadField({
   hint,
   error,
   previewAlt,
+  required,
 }: ImageUploadFieldProps) {
   const initialValue = defaultValue?.trim() ?? "";
   const inputId = useId();
@@ -69,7 +71,10 @@ export function ImageUploadField({
 
   return (
     <div className="grid gap-2">
-      <span className="text-sm font-medium text-white">{label}</span>
+      <span className="text-sm font-medium text-white">
+        {label}
+        {required ? <span className="text-orange-200"> *</span> : null}
+      </span>
 
       <input name={name} type="hidden" value={value} />
 
@@ -88,12 +93,13 @@ export function ImageUploadField({
               setValue(event.target.value);
               setUploadError(null);
             }}
+            required={required}
             placeholder={`Pega una URL o usa Storage en ${folder}/...`}
             className={cn(
               "min-h-12 rounded-[1.1rem] border bg-black/35 px-4 text-sm text-white placeholder:text-muted/55",
               error ? "border-red-400/60" : "border-white/10",
             )}
-            aria-invalid={error ? true : undefined}
+            aria-invalid={error || uploadError ? true : undefined}
           />
 
           <div className="flex flex-wrap items-center gap-3">

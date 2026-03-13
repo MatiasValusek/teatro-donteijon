@@ -142,10 +142,16 @@ export async function updateNewsPost(
       .update(payload)
       .eq("id", id)
       .select("id, slug")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return newsErrorState(error);
+    }
+
+    if (!data) {
+      return {
+        error: "La novedad que intentaste editar ya no existe.",
+      };
     }
 
     revalidatePath("/admin");
