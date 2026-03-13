@@ -2,6 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Panel } from "@/components/ui/panel";
 import {
+  getFunctionReservationHref,
+  getFunctionReservationLabel,
+  hasExternalReservation,
+} from "@/lib/reservations";
+import {
   formatDayNumber,
   formatLongDate,
   formatShortMonth,
@@ -48,15 +53,22 @@ export function FunctionEventCard({
             {event.venueAddress}
           </p>
           <p className="mt-4 text-sm uppercase tracking-[0.28em] text-orange-100">
-            {formatLongDate(event.date)} · {event.time} hs
+            {formatLongDate(event.date)} - {event.time} hs
           </p>
         </div>
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Badge variant="warm">Reservas abiertas</Badge>
-        <ButtonLink href={event.reservationUrl} external variant="secondary" size="md">
-          Reservar
+        <Badge variant="warm">
+          {hasExternalReservation(event) ? "Canal externo" : "Reserva interna"}
+        </Badge>
+        <ButtonLink
+          href={getFunctionReservationHref(event)}
+          external={hasExternalReservation(event)}
+          variant="secondary"
+          size="md"
+        >
+          {getFunctionReservationLabel(event)}
         </ButtonLink>
       </div>
     </Panel>

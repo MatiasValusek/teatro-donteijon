@@ -2,24 +2,28 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/ui/container";
 import { Panel } from "@/components/ui/panel";
-import { getActiveFunctionEvents, getActiveWorks } from "@/lib/catalog";
+import { siteConfig } from "@/lib/site";
 import { workStatusLabel } from "@/lib/theme";
 import { formatLongDate } from "@/lib/utils";
+import type { FunctionEventWithWork, Work } from "@/types/content";
 
-export function HeroSection() {
-  const activeWorks = getActiveWorks();
-  const activeEvents = getActiveFunctionEvents();
-  const featuredWork = activeWorks.find((work) => work.featured) ?? activeWorks[0];
-  const nextEvent = activeEvents[0];
+type HeroSectionProps = {
+  works: Work[];
+  upcomingItems: FunctionEventWithWork[];
+};
+
+export function HeroSection({ works, upcomingItems }: HeroSectionProps) {
+  const featuredWork =
+    works.find((work) => work.featured) ?? works[0] ?? upcomingItems[0]?.work;
+  const nextItem = upcomingItems[0];
   const heroStats = [
-    { label: "Obras activas", value: String(activeWorks.length).padStart(2, "0") },
-    { label: "Funciones abiertas", value: String(activeEvents.length).padStart(2, "0") },
-    { label: "Temporada", value: "2026" },
+    { label: "Obras activas", value: String(works.length).padStart(2, "0") },
+    {
+      label: "Funciones abiertas",
+      value: String(upcomingItems.length).padStart(2, "0"),
+    },
+    { label: "Temporada", value: String(new Date().getFullYear()) },
   ];
-
-  if (!featuredWork || !nextEvent) {
-    return null;
-  }
 
   return (
     <section className="relative overflow-hidden page-hero-space">
@@ -28,13 +32,13 @@ export function HeroSection() {
           <p className="section-eyebrow">
             Teatro independiente en movimiento
           </p>
-          <h1 className="mt-5 text-[3rem] leading-[0.92] text-white sm:text-[4.4rem] lg:text-[5.5rem]">
+          <h1 className="mt-5 text-balance text-[3rem] leading-[0.92] text-white sm:text-[4.4rem] lg:text-[5.5rem]">
             Una presencia digital para una escena intensa, movil y viva.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-8 text-muted sm:text-lg">
-            Vamos de Nuevo arranca con una web pensada primero para celular, con
-            una identidad teatral contemporanea, calida y lista para crecer sin
-            volverse institucional.
+            {siteConfig.name} sostiene una web pensada primero para celular, con
+            una identidad teatral contemporanea, calida y una base tecnica lista
+            para crecer sin perder claridad.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -73,20 +77,32 @@ export function HeroSection() {
               <p className="section-eyebrow">
                 En foco
               </p>
-              <h2 className="mt-3 text-3xl leading-none text-white sm:text-4xl">
-                {featuredWork.title}
-              </h2>
-              <p className="mt-3 text-sm leading-7 text-muted">
-                {featuredWork.shortDescription}
-              </p>
+              {featuredWork ? (
+                <>
+                  <h2 className="mt-3 text-balance text-3xl leading-none text-white sm:text-4xl">
+                    {featuredWork.title}
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-muted">
+                    {featuredWork.shortDescription}
+                  </p>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                <Badge>{featuredWork.genre}</Badge>
-                <Badge>{featuredWork.durationMinutes} min</Badge>
-                <Badge>
-                  {workStatusLabel[featuredWork.status]}
-                </Badge>
-              </div>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <Badge>{featuredWork.genre}</Badge>
+                    <Badge>{featuredWork.durationMinutes} min</Badge>
+                    <Badge>{workStatusLabel[featuredWork.status]}</Badge>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="mt-3 text-balance text-3xl leading-none text-white sm:text-4xl">
+                    Catalogo en actualizacion
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-muted">
+                    La home ya esta preparada para mostrar repertorio y agenda en
+                    cuanto haya contenido publico disponible.
+                  </p>
+                </>
+              )}
             </Panel>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-[0.9fr,1.1fr]">
@@ -94,13 +110,29 @@ export function HeroSection() {
                 <p className="section-eyebrow">
                   Proxima fecha
                 </p>
-                <p className="mt-3 text-xl text-white">
-                  {formatLongDate(nextEvent.date)}
-                </p>
-                <p className="mt-1 text-sm text-muted">{nextEvent.venueName}</p>
-                <p className="mt-4 text-sm uppercase tracking-[0.28em] text-orange-100">
-                  {nextEvent.time} hs
-                </p>
+                {nextItem ? (
+                  <>
+                    <p className="mt-3 text-xl text-white">
+                      {formatLongDate(nextItem.event.date)}
+                    </p>
+                    <p className="mt-1 text-sm text-muted">
+                      {nextItem.event.venueName}
+                    </p>
+                    <p className="mt-4 text-sm uppercase tracking-[0.28em] text-orange-100">
+                      {nextItem.event.time} hs
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-3 text-xl text-white">
+                      Agenda en actualizacion
+                    </p>
+                    <p className="mt-1 text-sm text-muted">
+                      Las proximas fechas apareceran automaticamente cuando haya
+                      funciones activas publicadas.
+                    </p>
+                  </>
+                )}
               </Panel>
 
               <blockquote className="rounded-[1.8rem] border border-white/10 bg-[linear-gradient(145deg,rgba(244,92,44,0.14),rgba(18,18,18,0.9))] p-5">

@@ -25,8 +25,8 @@ export function FunctionsFilters({
             Filtro por obra
           </p>
           <p className="mt-2 text-sm leading-7 text-muted">
-            Estructura visual lista para sumar mas filtros cuando conectemos la
-            agenda real.
+            La agenda ya usa contenido real y deja margen para sumar mas filtros
+            sin rehacer la UI.
           </p>
         </div>
 

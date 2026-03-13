@@ -25,6 +25,16 @@ export default async function AdminDashboardPage() {
             ...item,
             meta: `${summary.newsCount} publicadas o en borrador`,
           };
+        case "/admin/reservas":
+          return {
+            ...item,
+            meta: `${summary.reservationsCount} recibidas`,
+          };
+        case "/admin/contacto":
+          return {
+            ...item,
+            meta: `${summary.contactMessagesCount} mensajes`,
+          };
         case "/admin/integrantes":
           return {
             ...item,

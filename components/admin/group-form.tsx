@@ -6,6 +6,7 @@ import { initialAdminFormState } from "@/lib/actions/form-state";
 import type { AdminGroupInfoRow } from "@/lib/queries/admin";
 import { AdminActions } from "./admin-actions";
 import { AdminFormSection } from "./admin-form-section";
+import { ImageUploadField } from "./media/image-upload-field";
 import {
   AdminFormNotice,
   AdminInputField,
@@ -88,12 +89,18 @@ export function GroupForm({ group, saved = false }: GroupFormProps) {
         title="Imagen principal"
         description="Visual principal utilizado en la presentacion institucional."
       >
-        <AdminInputField
+        <ImageUploadField
           name="hero_image_url"
-          label="URL imagen hero"
-          type="url"
+          label="Imagen hero"
+          folder="group"
           defaultValue={group?.hero_image_url}
           error={state.fieldErrors?.hero_image_url}
+          previewAlt={
+            group?.name
+              ? `Imagen principal de ${group.name}`
+              : "Imagen principal del grupo"
+          }
+          hint="Esta imagen se reutiliza tambien como base visual para la historia institucional."
         />
       </AdminFormSection>
 

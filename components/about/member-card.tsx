@@ -13,7 +13,7 @@ export function MemberCard({ member }: MemberCardProps) {
           src={member.image}
           alt={`Retrato de ${member.name}`}
           fill
-          sizes="(min-width: 1280px) 360px, (min-width: 768px) 50vw, 100vw"
+          sizes="(min-width: 1280px) 352px, (min-width: 768px) calc(50vw - 2rem), calc(100vw - 2rem)"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.04),rgba(0,0,0,0.56))]" />

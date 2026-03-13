@@ -43,7 +43,7 @@ export function NewsContent({ post }: NewsContentProps) {
                       src={image.src}
                       alt={image.alt}
                       fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 420px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 media-overlay" />

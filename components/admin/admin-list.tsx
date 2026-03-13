@@ -1,4 +1,5 @@
-import Link from "next/link";
+import type { ReactNode } from "react";
+import { ButtonLink } from "@/components/ui/button-link";
 
 export type AdminListItem = {
   id: string;
@@ -6,8 +7,8 @@ export type AdminListItem = {
   href: string;
   description?: string;
   eyebrow?: string;
-  badges?: string[];
-  meta?: string[];
+  badges?: ReactNode[];
+  meta?: ReactNode[];
 };
 
 type AdminListProps = {
@@ -47,7 +48,7 @@ export function AdminList({
                 </p>
               ) : null}
 
-              <h3 className="mt-2 text-3xl leading-none text-white">
+              <h3 className="mt-2 text-balance text-3xl leading-none text-white">
                 {item.title}
               </h3>
 
@@ -59,37 +60,29 @@ export function AdminList({
 
               {item.meta?.length ? (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {item.meta.map((entry) => (
-                    <span
-                      key={`${item.id}-${entry}`}
-                      className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs uppercase tracking-[0.24em] text-muted"
-                    >
-                      {entry}
-                    </span>
+                  {item.meta.map((entry, index) => (
+                    <div key={`${item.id}-meta-${index}`}>{entry}</div>
                   ))}
                 </div>
               ) : null}
 
               {item.badges?.length ? (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {item.badges.map((badge) => (
-                    <span
-                      key={`${item.id}-${badge}`}
-                      className="rounded-full border border-orange-300/18 bg-orange-300/10 px-3 py-1 text-xs uppercase tracking-[0.24em] text-orange-100"
-                    >
-                      {badge}
-                    </span>
+                  {item.badges.map((badge, index) => (
+                    <div key={`${item.id}-badge-${index}`}>{badge}</div>
                   ))}
                 </div>
               ) : null}
             </div>
 
-            <Link
+            <ButtonLink
               href={item.href}
-              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/6 px-5 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline-none"
+              variant="secondary"
+              size="md"
+              className="shrink-0"
             >
               Editar
-            </Link>
+            </ButtonLink>
           </div>
         </article>
       ))}

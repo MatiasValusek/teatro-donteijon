@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button-link";
 
 type AdminPageTitleProps = {
   title: string;
@@ -19,7 +19,7 @@ export function AdminPageTitle({
         <p className="text-xs font-semibold uppercase tracking-[0.32em] text-orange-200/80">
           Panel
         </p>
-        <h2 className="mt-3 font-display text-5xl leading-none text-white">
+        <h2 className="mt-3 font-display text-balance text-4xl leading-none text-white sm:text-5xl">
           {title}
         </h2>
         {description ? (
@@ -30,12 +30,9 @@ export function AdminPageTitle({
       </div>
 
       {actionHref && actionLabel ? (
-        <Link
-          href={actionHref}
-          className="inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#f45c2c,#ff8e3c)] px-5 text-sm font-semibold text-zinc-950 shadow-[0_18px_60px_rgba(244,92,44,0.2)] hover:brightness-105 focus-visible:outline-none"
-        >
+        <ButtonLink href={actionHref} size="md">
           {actionLabel}
-        </Link>
+        </ButtonLink>
       ) : null}
     </div>
   );

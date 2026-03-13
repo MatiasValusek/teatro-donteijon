@@ -43,7 +43,7 @@ export function toArgentinaDateTimeLocalValue(isoDateTime: string) {
   return `${parts.date}T${parts.time}`;
 }
 
-export function groupRowsBy<Row extends { id: string }, Key extends string>(
+export function groupRowsBy<Row, Key extends string>(
   rows: Row[],
   getKey: (row: Row) => Key,
 ) {
@@ -90,10 +90,6 @@ export function logSupabaseQueryError(scope: string, error: unknown) {
   console.error(`[supabase:${scope}]`, error);
 }
 
-export function hasRows<Row>(rows: Row[] | null | undefined): rows is Row[] {
-  return Array.isArray(rows) && rows.length > 0;
-}
-
 export type GroupInfoRow = TableRow<"group_info">;
 export type GroupMilestoneRow = TableRow<"group_milestones">;
 export type GroupGalleryRow = TableRow<"group_gallery">;
@@ -101,8 +97,56 @@ export type MemberRow = TableRow<"members">;
 export type WorkRow = TableRow<"works">;
 export type WorkGalleryRow = TableRow<"work_gallery">;
 export type FunctionRow = TableRow<"functions">;
+export type ContactMessageRow = TableRow<"contact_messages">;
+export type ReservationRow = TableRow<"reservations">;
 export type NewsPostRow = TableRow<"news_posts">;
 export type NewsGalleryRow = TableRow<"news_gallery">;
+
+export type PublicWorkRow = Pick<
+  WorkRow,
+  | "id"
+  | "slug"
+  | "title"
+  | "short_description"
+  | "full_description"
+  | "genre"
+  | "duration_minutes"
+  | "status"
+  | "director"
+  | "cast"
+  | "cover_image_url"
+  | "cover_image_alt"
+  | "featured"
+  | "artistic_text"
+  | "technical_sheet"
+>;
+
+export type PublicFunctionRow = Pick<
+  FunctionRow,
+  | "id"
+  | "work_id"
+  | "starts_at"
+  | "venue_name"
+  | "venue_address"
+  | "reservation_url"
+  | "ticket_price_text"
+  | "is_active"
+>;
+
+export type PublicNewsPostRow = Pick<
+  NewsPostRow,
+  | "id"
+  | "slug"
+  | "title"
+  | "excerpt"
+  | "content"
+  | "cover_image_url"
+  | "cover_image_alt"
+  | "category"
+  | "featured"
+  | "published_at"
+  | "created_at"
+>;
 
 export const GROUP_INFO_COLUMNS =
   "id, name, short_name, subtitle, history, manifesto, highlighted_quote, hero_image_url, hero_image_alt, history_image_url, history_image_alt, contact_email, press_email, instagram_url, phone, city, focus_areas, manifesto_pillars, created_at, updated_at";
@@ -119,14 +163,29 @@ export const MEMBERS_COLUMNS =
 export const WORKS_COLUMNS =
   "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, cover_image_alt, featured, is_published, sort_order, artistic_text, technical_sheet, created_at, updated_at";
 
+export const PUBLIC_WORKS_COLUMNS =
+  "id, slug, title, short_description, full_description, genre, duration_minutes, status, director, cast, cover_image_url, cover_image_alt, featured, artistic_text, technical_sheet";
+
 export const WORK_GALLERY_COLUMNS =
   "id, work_id, image_url, alt_text, sort_order, created_at";
 
 export const FUNCTIONS_COLUMNS =
   "id, work_id, starts_at, venue_name, venue_address, reservation_url, ticket_price_text, is_active, created_at, updated_at";
 
+export const PUBLIC_FUNCTIONS_COLUMNS =
+  "id, work_id, starts_at, venue_name, venue_address, reservation_url, ticket_price_text, is_active";
+
+export const CONTACT_MESSAGES_COLUMNS =
+  "id, full_name, email, subject, message, created_at";
+
+export const RESERVATIONS_COLUMNS =
+  "id, function_id, work_id, full_name, email, phone, quantity, message, status, created_at";
+
 export const NEWS_POSTS_COLUMNS =
   "id, slug, title, excerpt, content, cover_image_url, cover_image_alt, category, featured, is_published, published_at, created_at, updated_at";
+
+export const PUBLIC_NEWS_POSTS_COLUMNS =
+  "id, slug, title, excerpt, content, cover_image_url, cover_image_alt, category, featured, published_at, created_at";
 
 export const NEWS_GALLERY_COLUMNS =
   "id, news_post_id, image_url, alt_text, sort_order, created_at";

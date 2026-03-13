@@ -8,6 +8,7 @@ import {
   getList,
   getMutationClient,
   getOptionalString,
+  getStoredImageValue,
   getString,
   getSupabaseErrorMessage,
   hasFieldErrors,
@@ -21,7 +22,7 @@ function parseGroupPayload(formData: FormData) {
   const history = getList(formData, "history");
   const manifesto = getList(formData, "manifesto");
   const highlightedQuote = getString(formData, "highlighted_quote");
-  const heroImageUrl = getString(formData, "hero_image_url");
+  const heroImageUrl = getStoredImageValue(formData, "hero_image_url");
   const contactEmail = getString(formData, "contact_email");
   const pressEmail = getOptionalString(formData, "press_email");
   const instagramUrl = getString(formData, "instagram_url");
@@ -83,7 +84,7 @@ export async function saveGroupInfo(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const existingGroupQuery = requestedId
       ? client
           .from("group_info")

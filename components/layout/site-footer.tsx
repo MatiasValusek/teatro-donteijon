@@ -2,8 +2,7 @@ import Link from "next/link";
 import { ContactItem } from "@/components/contact/contact-item";
 import { SocialLinks } from "@/components/contact/social-links";
 import { Container } from "@/components/ui/container";
-import { socialLinks } from "@/data/site";
-import { footerNavigation, siteConfig } from "@/lib/site";
+import { footerNavigation, siteConfig, socialLinks } from "@/lib/site";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();

@@ -24,7 +24,7 @@ export function WorkCard({ work }: WorkCardProps) {
             src={work.coverImage}
             alt={work.coverAlt}
             fill
-            sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 33vw"
+            sizes="(min-width: 1280px) 360px, (min-width: 640px) calc(50vw - 2.5rem), calc(100vw - 3rem)"
             className="object-cover transition duration-500 group-hover:scale-[1.04]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,8,8,0.08),rgba(8,8,8,0.78))]" />
@@ -41,7 +41,7 @@ export function WorkCard({ work }: WorkCardProps) {
           <Badge>{work.genre}</Badge>
           <Badge>{work.durationMinutes} min</Badge>
         </div>
-        <h3 className="mt-4 text-[2.3rem] leading-none text-white sm:text-4xl">
+        <h3 className="mt-4 text-balance text-[2.3rem] leading-none text-white sm:text-4xl">
           {work.title}
         </h3>
         <p className="mt-3 text-sm leading-7 text-muted">

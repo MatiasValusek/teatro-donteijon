@@ -91,7 +91,8 @@ export function FunctionForm({
             name="reservation_url"
             label="URL de reservas"
             type="url"
-            defaultValue={event?.reservation_url}
+            defaultValue={event?.reservation_url ?? ""}
+            hint="Opcional. Si queda vacio, la web usa reserva interna simple."
             error={state.fieldErrors?.reservation_url}
           />
           <AdminInputField

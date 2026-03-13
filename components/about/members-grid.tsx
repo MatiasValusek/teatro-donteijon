@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/container";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionShell } from "@/components/ui/section-shell";
 import type { Member } from "@/types/about";
 import { MemberCard } from "./member-card";
@@ -16,9 +17,16 @@ export function MembersGrid({ members }: MembersGridProps) {
       description="Las obras se construyen desde un entramado de miradas complementarias. Cada integrante sostiene una parte del proceso y, al mismo tiempo, participa de una identidad comun."
     >
       <Container className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {members.map((member) => (
-          <MemberCard key={member.id} member={member} />
-        ))}
+        {members.length > 0 ? (
+          members.map((member) => <MemberCard key={member.id} member={member} />)
+        ) : (
+          <div className="md:col-span-2 xl:col-span-3">
+            <EmptyState
+              title="Todavia no hay integrantes visibles."
+              description="Los perfiles activos del grupo van a aparecer aca en cuanto esten publicados."
+            />
+          </div>
+        )}
       </Container>
     </SectionShell>
   );

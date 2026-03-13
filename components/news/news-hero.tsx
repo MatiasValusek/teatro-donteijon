@@ -23,7 +23,7 @@ export function NewsHero({ post }: NewsHeroProps) {
               alt={post.coverAlt ?? post.title}
               fill
               priority
-              sizes="(min-width: 1024px) 1120px, 100vw"
+              sizes="(min-width: 1280px) 1120px, (min-width: 640px) calc(100vw - 4rem), calc(100vw - 2rem)"
               className="object-cover"
             />
           </div>
@@ -43,7 +43,7 @@ export function NewsHero({ post }: NewsHeroProps) {
                 </span>
               </div>
 
-              <h1 className="mt-5 text-[3rem] leading-[0.92] text-white sm:text-[4.3rem] lg:text-[5.2rem]">
+              <h1 className="mt-5 text-balance text-[3rem] leading-[0.92] text-white sm:text-[4.3rem] lg:text-[5.2rem]">
                 {post.title}
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-8 text-muted-strong sm:text-lg">

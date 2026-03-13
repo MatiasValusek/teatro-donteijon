@@ -1,7 +1,7 @@
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { SectionShell } from "@/components/ui/section-shell";
-import { companyHighlights } from "@/lib/mocks";
+import { companyHighlights } from "@/lib/site";
 
 export function CompanyPreviewSection() {
   return (

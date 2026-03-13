@@ -224,7 +224,7 @@ export type Database = {
           created_at: string;
           id: string;
           is_active: boolean;
-          reservation_url: string;
+          reservation_url: string | null;
           starts_at: string;
           ticket_price_text: string | null;
           updated_at: string;
@@ -236,7 +236,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           is_active?: boolean;
-          reservation_url: string;
+          reservation_url?: string | null;
           starts_at: string;
           ticket_price_text?: string | null;
           updated_at?: string;
@@ -248,6 +248,69 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "functions_work_id_fkey";
+            columns: ["work_id"];
+            isOneToOne: false;
+            referencedRelation: "works";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      contact_messages: {
+        Row: {
+          created_at: string;
+          email: string;
+          full_name: string;
+          id: string;
+          message: string;
+          subject: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          full_name: string;
+          id?: string;
+          message: string;
+          subject: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["contact_messages"]["Insert"]>;
+        Relationships: [];
+      };
+      reservations: {
+        Row: {
+          created_at: string;
+          email: string;
+          full_name: string;
+          function_id: string;
+          id: string;
+          message: string | null;
+          phone: string;
+          quantity: number;
+          status: Database["public"]["Enums"]["reservation_status"];
+          work_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          full_name: string;
+          function_id: string;
+          id?: string;
+          message?: string | null;
+          phone: string;
+          quantity: number;
+          status?: Database["public"]["Enums"]["reservation_status"];
+          work_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reservations"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "reservations_function_id_fkey";
+            columns: ["function_id"];
+            isOneToOne: false;
+            referencedRelation: "functions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reservations_work_id_fkey";
             columns: ["work_id"];
             isOneToOne: false;
             referencedRelation: "works";
@@ -322,6 +385,7 @@ export type Database = {
     Functions: Record<string, never>;
     Enums: {
       news_category: "anuncio" | "estreno" | "festival" | "prensa" | "taller";
+      reservation_status: "pending" | "confirmed" | "cancelled";
       work_status: "active" | "archive";
     };
     CompositeTypes: Record<string, never>;

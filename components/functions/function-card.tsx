@@ -2,6 +2,11 @@ import Image from "next/image";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Badge } from "@/components/ui/badge";
 import { Panel } from "@/components/ui/panel";
+import {
+  getFunctionReservationHref,
+  getFunctionReservationLabel,
+  hasExternalReservation,
+} from "@/lib/reservations";
 import { formatLongDate } from "@/lib/utils";
 import type { FunctionEventWithWork } from "@/types/content";
 
@@ -27,7 +32,7 @@ export function FunctionCard({ item }: FunctionCardProps) {
               src={work.coverImage}
               alt={work.coverAlt}
               fill
-              sizes="(max-width: 639px) 100vw, 104px"
+              sizes="(min-width: 640px) 104px, calc(100vw - 3rem)"
               className="object-cover"
             />
             <div className="absolute inset-0 media-overlay" />
@@ -40,7 +45,7 @@ export function FunctionCard({ item }: FunctionCardProps) {
             <Badge>{work.genre}</Badge>
           </div>
 
-          <h3 className="mt-4 text-3xl leading-none text-white">
+          <h3 className="mt-4 text-balance text-3xl leading-none text-white">
             {work.title}
           </h3>
           <p className="mt-3 text-sm uppercase tracking-[0.28em] text-orange-100">
@@ -54,8 +59,12 @@ export function FunctionCard({ item }: FunctionCardProps) {
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <ButtonLink href={event.reservationUrl} external size="md">
-          Reservar
+        <ButtonLink
+          href={getFunctionReservationHref(event)}
+          external={hasExternalReservation(event)}
+          size="md"
+        >
+          {getFunctionReservationLabel(event)}
         </ButtonLink>
         <ButtonLink href={`/obras/${work.slug}`} variant="secondary" size="md">
           Ver obra

@@ -22,7 +22,7 @@ export function FeaturedNewsCard({ post }: FeaturedNewsCardProps) {
             alt={post.coverAlt ?? post.title}
             fill
             priority
-            sizes="(min-width: 1024px) 55vw, 100vw"
+            sizes="(min-width: 1280px) 620px, (min-width: 1024px) 56vw, calc(100vw - 2rem)"
             className="object-cover"
           />
           <div className="absolute inset-0 media-overlay" />

@@ -19,3 +19,9 @@ export type SocialLink = {
   href: string;
   external?: boolean;
 };
+
+export type SiteHighlight = {
+  kicker: string;
+  title: string;
+  description: string;
+};

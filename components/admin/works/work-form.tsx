@@ -6,6 +6,7 @@ import { createWork, updateWork } from "@/lib/actions/works";
 import type { AdminWorkRow } from "@/lib/queries/admin";
 import { AdminActions } from "@/components/admin/admin-actions";
 import { AdminFormSection } from "@/components/admin/admin-form-section";
+import { ImageUploadField } from "@/components/admin/media/image-upload-field";
 import {
   AdminCheckboxField,
   AdminFormNotice,
@@ -120,25 +121,28 @@ export function WorkForm({ work, saved = false }: WorkFormProps) {
           />
           <AdminInputField
             name="sort_order"
-            label="sort_order"
+            label="Orden"
             type="number"
             min={0}
             defaultValue={work?.sort_order ?? 0}
             error={state.fieldErrors?.sort_order}
           />
-          <AdminInputField
-            name="cover_image_url"
-            label="URL de portada"
-            type="url"
-            defaultValue={work?.cover_image_url}
-            error={state.fieldErrors?.cover_image_url}
-          />
         </div>
+
+        <ImageUploadField
+          name="cover_image_url"
+          label="Imagen de portada"
+          folder="works"
+          defaultValue={work?.cover_image_url}
+          error={state.fieldErrors?.cover_image_url}
+          previewAlt={work?.title ? `Portada de ${work.title}` : "Portada de la obra"}
+          hint="Sube la portada principal de la obra. Si ya tenes una URL o path cargado, tambien puedes mantenerlo."
+        />
 
         <div className="grid gap-4 md:grid-cols-2">
           <AdminCheckboxField
             name="featured"
-            label="Featured"
+            label="Destacada"
             hint="Marca la obra para darle prioridad visual."
             defaultChecked={work?.featured}
           />

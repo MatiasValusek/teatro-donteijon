@@ -4,6 +4,7 @@ export {
   getFeaturedNewsPost,
   getNewsBySlug,
   getPublishedNews,
+  getPublishedNewsSlugs,
   getRelatedNewsPosts,
 } from "./news";
-export { getPublishedWorks, getWorkBySlug } from "./works";
+export { getPublishedWorks, getPublishedWorkSlugs, getWorkBySlug } from "./works";

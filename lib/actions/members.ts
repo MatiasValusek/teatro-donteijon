@@ -8,6 +8,7 @@ import {
   getBoolean,
   getInteger,
   getMutationClient,
+  getStoredImageValue,
   getString,
   getSupabaseErrorMessage,
   hasFieldErrors,
@@ -18,7 +19,7 @@ function parseMemberPayload(formData: FormData) {
   const name = getString(formData, "name");
   const role = getString(formData, "role");
   const bio = getString(formData, "bio");
-  const imageUrl = getString(formData, "image_url");
+  const imageUrl = getStoredImageValue(formData, "image_url");
   const sortOrder = getInteger(formData, "sort_order", { min: 0, fallback: 0 });
   const isActive = getBoolean(formData, "is_active");
 
@@ -61,7 +62,7 @@ export async function createMember(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("members")
       .insert(payload)
@@ -100,7 +101,7 @@ export async function updateMember(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("members")
       .update(payload)

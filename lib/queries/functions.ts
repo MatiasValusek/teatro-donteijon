@@ -3,10 +3,9 @@ import { functionEvents as functionsFallback } from "@/data/functions";
 import { works as worksFallback } from "@/data/works";
 import { mapFunctionRowToFunctionEvent } from "@/lib/queries/mappers";
 import {
-  FUNCTIONS_COLUMNS,
-  hasRows,
   logSupabaseQueryError,
   orderFunctionsWithWorks,
+  PUBLIC_FUNCTIONS_COLUMNS,
 } from "@/lib/queries/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { isFutureDateTime, sortFunctionEvents } from "@/lib/utils";
@@ -25,6 +24,17 @@ function fallbackFunctionsWithWorks() {
       return accumulator;
     },
     [],
+  );
+}
+
+function fallbackFunctionsByWorkId(workId: string) {
+  return sortFunctionEvents(
+    functionsFallback.filter(
+      (event) =>
+        event.workId === workId &&
+        event.active &&
+        isFutureDateTime(event.date, event.time),
+    ),
   );
 }
 
@@ -59,16 +69,17 @@ export const getFunctions = cache(async () => {
       getPublishedWorks(),
       client
         .from("functions")
-        .select(FUNCTIONS_COLUMNS)
+        .select(PUBLIC_FUNCTIONS_COLUMNS)
         .order("starts_at", { ascending: true }),
     ]);
 
-    if (functionsResult.error || !hasRows(functionsResult.data)) {
-      if (functionsResult.error) {
-        logSupabaseQueryError("getFunctions", functionsResult.error);
-      }
-
+    if (functionsResult.error) {
+      logSupabaseQueryError("getFunctions", functionsResult.error);
       return fallbackFunctionsWithWorks();
+    }
+
+    if (!(functionsResult.data?.length)) {
+      return [];
     }
 
     return combineFunctionsWithWorks(
@@ -95,20 +106,21 @@ export const getUpcomingFunctions = cache(async () => {
       getPublishedWorks(),
       client
         .from("functions")
-        .select(FUNCTIONS_COLUMNS)
+        .select(PUBLIC_FUNCTIONS_COLUMNS)
         .eq("is_active", true)
         .gte("starts_at", new Date().toISOString())
         .order("starts_at", { ascending: true }),
     ]);
 
-    if (functionsResult.error || !hasRows(functionsResult.data)) {
-      if (functionsResult.error) {
-        logSupabaseQueryError("getUpcomingFunctions", functionsResult.error);
-      }
-
+    if (functionsResult.error) {
+      logSupabaseQueryError("getUpcomingFunctions", functionsResult.error);
       return fallbackFunctionsWithWorks().filter(
         ({ event }) => event.active && isFutureDateTime(event.date, event.time),
       );
+    }
+
+    if (!(functionsResult.data?.length)) {
+      return [];
     }
 
     return combineFunctionsWithWorks(
@@ -127,50 +139,30 @@ export const getFunctionsByWorkId = cache(async (workId: string) => {
   const client = getSupabaseServerClient();
 
   if (!client) {
-    return sortFunctionEvents(
-      functionsFallback.filter(
-        (event) =>
-          event.workId === workId &&
-          event.active &&
-          isFutureDateTime(event.date, event.time),
-      ),
-    );
+    return fallbackFunctionsByWorkId(workId);
   }
 
   try {
     const { data, error } = await client
       .from("functions")
-      .select(FUNCTIONS_COLUMNS)
+      .select(PUBLIC_FUNCTIONS_COLUMNS)
       .eq("work_id", workId)
       .eq("is_active", true)
       .gte("starts_at", new Date().toISOString())
       .order("starts_at", { ascending: true });
 
-    if (error || !hasRows(data)) {
-      if (error) {
-        logSupabaseQueryError("getFunctionsByWorkId", error);
-      }
+    if (error) {
+      logSupabaseQueryError("getFunctionsByWorkId", error);
+      return fallbackFunctionsByWorkId(workId);
+    }
 
-      return sortFunctionEvents(
-        functionsFallback.filter(
-          (event) =>
-            event.workId === workId &&
-            event.active &&
-            isFutureDateTime(event.date, event.time),
-        ),
-      );
+    if (!(data?.length)) {
+      return [];
     }
 
     return data.map(mapFunctionRowToFunctionEvent);
   } catch (error) {
     logSupabaseQueryError("getFunctionsByWorkId", error);
-    return sortFunctionEvents(
-      functionsFallback.filter(
-        (event) =>
-          event.workId === workId &&
-          event.active &&
-          isFutureDateTime(event.date, event.time),
-      ),
-    );
+    return fallbackFunctionsByWorkId(workId);
   }
 });

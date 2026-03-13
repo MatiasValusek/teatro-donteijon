@@ -26,6 +26,16 @@ export const adminNavigation: AdminNavigationItem[] = [
     description: "Administra noticias, estrenos, prensa, talleres y anuncios.",
   },
   {
+    href: "/admin/reservas",
+    label: "Reservas",
+    description: "Consulta las reservas internas que llegan desde las funciones publicas.",
+  },
+  {
+    href: "/admin/contacto",
+    label: "Contacto",
+    description: "Revisa los mensajes generales enviados desde la web publica.",
+  },
+  {
     href: "/admin/integrantes",
     label: "Integrantes",
     description: "Edita las fichas de quienes forman parte del grupo.",

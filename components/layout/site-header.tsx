@@ -23,7 +23,13 @@ export function SiteHeader() {
   const closeMenu = () => setIsOpen(false);
 
   useEffect(() => {
-    const syncScroll = () => setIsScrolled(window.scrollY > 16);
+    const syncScroll = () => {
+      const nextScrolled = window.scrollY > 16;
+
+      setIsScrolled((current) =>
+        current === nextScrolled ? current : nextScrolled,
+      );
+    };
 
     syncScroll();
     window.addEventListener("scroll", syncScroll, { passive: true });

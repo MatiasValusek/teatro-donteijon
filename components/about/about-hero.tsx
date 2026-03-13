@@ -17,7 +17,7 @@ export function AboutHero({ group }: AboutHeroProps) {
               alt={`Escena grupal de ${group.name}`}
               fill
               priority
-              sizes="(min-width: 1024px) 1120px, 100vw"
+              sizes="(min-width: 1280px) 1120px, (min-width: 640px) calc(100vw - 4rem), calc(100vw - 2rem)"
               className="object-cover"
             />
           </div>
@@ -29,7 +29,7 @@ export function AboutHero({ group }: AboutHeroProps) {
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-orange-200/80">
                 {group.shortName} / Teatro independiente
               </p>
-              <h1 className="mt-5 text-[3.4rem] leading-[0.9] text-white sm:text-[4.6rem] lg:text-[5.8rem]">
+              <h1 className="mt-5 text-balance text-[3.4rem] leading-[0.9] text-white sm:text-[4.6rem] lg:text-[5.8rem]">
                 Nosotros
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-8 text-muted-strong sm:text-lg">

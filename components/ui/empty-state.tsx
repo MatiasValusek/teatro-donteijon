@@ -18,7 +18,7 @@ export function EmptyState({
       padding="lg"
       className="border-dashed border-white/15"
     >
-      <h3 className="text-3xl leading-none text-white">{title}</h3>
+      <h3 className="text-balance text-3xl leading-none text-white">{title}</h3>
       <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">
         {description}
       </p>

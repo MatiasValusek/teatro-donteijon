@@ -15,7 +15,7 @@ import {
 } from "./shared";
 
 async function getWorkSlug(workId: string) {
-  const client = getMutationClient();
+  const client = await getMutationClient();
   const { data } = await client
     .from("works")
     .select("slug")
@@ -36,7 +36,7 @@ function parseFunctionPayload(formData: FormData) {
   const workId = getString(formData, "work_id");
   const venueName = getString(formData, "venue_name");
   const venueAddress = getString(formData, "venue_address");
-  const reservationUrl = getString(formData, "reservation_url");
+  const reservationUrl = getOptionalString(formData, "reservation_url");
   const ticketPriceText = getOptionalString(formData, "ticket_price_text");
   const startsAt = getRequiredDateTimeIso(formData, "starts_at");
   const isActive = getBoolean(formData, "is_active");
@@ -44,7 +44,6 @@ function parseFunctionPayload(formData: FormData) {
   ensureRequired(fieldErrors, "work_id", workId);
   ensureRequired(fieldErrors, "venue_name", venueName);
   ensureRequired(fieldErrors, "venue_address", venueAddress);
-  ensureRequired(fieldErrors, "reservation_url", reservationUrl);
 
   if (startsAt.error) {
     fieldErrors.starts_at = startsAt.error;
@@ -78,7 +77,7 @@ export async function createFunction(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("functions")
       .insert(payload)
@@ -124,7 +123,7 @@ export async function updateFunction(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("functions")
       .update(payload)

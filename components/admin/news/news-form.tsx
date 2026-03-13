@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { AdminActions } from "@/components/admin/admin-actions";
 import { AdminFormSection } from "@/components/admin/admin-form-section";
+import { ImageUploadField } from "@/components/admin/media/image-upload-field";
 import {
   AdminCheckboxField,
   AdminFormNotice,
@@ -71,7 +72,7 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
       >
         <AdminTextareaField
           name="excerpt"
-          label="Excerpt"
+          label="Resumen"
           rows={4}
           defaultValue={post?.excerpt}
           error={state.fieldErrors?.excerpt}
@@ -85,12 +86,14 @@ export function NewsForm({ post, saved = false }: NewsFormProps) {
           error={state.fieldErrors?.content}
         />
 
-        <AdminInputField
+        <ImageUploadField
           name="cover_image_url"
-          label="URL de portada"
-          type="url"
+          label="Imagen de portada"
+          folder="news"
           defaultValue={post?.cover_image_url}
           error={state.fieldErrors?.cover_image_url}
+          previewAlt={post?.title ? `Portada de ${post.title}` : "Portada de la novedad"}
+          hint="Sube la portada editorial o conserva el valor actual si todavia no hace falta reemplazarlo."
         />
       </AdminFormSection>
 

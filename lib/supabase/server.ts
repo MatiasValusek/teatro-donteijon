@@ -1,17 +1,6 @@
 import { cache } from "react";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
-import { isSupabaseConfigured, supabaseConfig } from "@/lib/supabase/config";
+import { createSupabaseClient } from "@/lib/supabase/base";
 
-export const getSupabaseServerClient = cache(() => {
-  if (!isSupabaseConfigured) {
-    return null;
-  }
+export { createSupabaseClient as createSupabaseServerClient } from "@/lib/supabase/base";
 
-  return createClient<Database>(supabaseConfig.url, supabaseConfig.anonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
-});
+export const getSupabaseServerClient = cache(() => createSupabaseClient());

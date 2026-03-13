@@ -20,7 +20,7 @@ export function NewsCard({ post }: NewsCardProps) {
           src={post.coverImage}
           alt={post.coverAlt ?? post.title}
           fill
-          sizes="(min-width: 1280px) 30vw, (min-width: 768px) 50vw, 100vw"
+          sizes="(min-width: 1280px) 360px, (min-width: 768px) calc(50vw - 2rem), calc(100vw - 2rem)"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.56))]" />
@@ -38,7 +38,9 @@ export function NewsCard({ post }: NewsCardProps) {
           </span>
         </div>
 
-        <h3 className="mt-5 text-3xl leading-none text-white">{post.title}</h3>
+        <h3 className="mt-5 text-balance text-3xl leading-none text-white">
+          {post.title}
+        </h3>
         <p className="mt-4 text-sm leading-7 text-muted">{post.excerpt}</p>
 
         <div className="mt-8">

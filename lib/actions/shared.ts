@@ -1,4 +1,6 @@
-import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getAdminQueryClient } from "@/lib/admin/auth";
+import { createSupabaseServerClient, getSupabaseServerClient } from "@/lib/supabase/server";
+import { normalizeStoredImageValue } from "@/lib/supabase/storage";
 
 export function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -20,8 +22,16 @@ export function getOptionalString(formData: FormData, key: string) {
   return value.length > 0 ? value : null;
 }
 
+export function getStoredImageValue(formData: FormData, key: string) {
+  return normalizeStoredImageValue(getString(formData, key));
+}
+
 export function getBoolean(formData: FormData, key: string) {
   return formData.get(key) === "on";
+}
+
+export function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 export function getList(formData: FormData, key: string) {
@@ -53,6 +63,44 @@ export function getInteger(
   if (!Number.isInteger(parsed)) {
     return {
       value: options?.fallback ?? 0,
+      error: "Ingresa un numero entero valido.",
+    };
+  }
+
+  if (options?.min !== undefined && parsed < options.min) {
+    return {
+      value: parsed,
+      error: `Debe ser mayor o igual a ${options.min}.`,
+    };
+  }
+
+  return {
+    value: parsed,
+    error: undefined,
+  };
+}
+
+export function getRequiredInteger(
+  formData: FormData,
+  key: string,
+  options?: {
+    min?: number;
+  },
+) {
+  const rawValue = getString(formData, key);
+
+  if (!rawValue) {
+    return {
+      value: 0,
+      error: "Completa este campo.",
+    };
+  }
+
+  const parsed = Number(rawValue);
+
+  if (!Number.isInteger(parsed)) {
+    return {
+      value: 0,
       error: "Ingresa un numero entero valido.",
     };
   }
@@ -135,16 +183,23 @@ export function ensureRequired(
   }
 }
 
-export function getMutationClient() {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    throw new Error(
-      "Supabase no esta configurado. Define NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY.",
-    );
+export function ensureEmail(
+  fieldErrors: Record<string, string>,
+  key: string,
+  value: string | null,
+  message = "Ingresa un email valido.",
+) {
+  if (!value || !isValidEmail(value.trim())) {
+    fieldErrors[key] = message;
   }
+}
 
-  return client;
+export async function getMutationClient() {
+  return getAdminQueryClient();
+}
+
+export function getPublicMutationClient() {
+  return createSupabaseServerClient() ?? getSupabaseServerClient();
 }
 
 export function getSupabaseErrorMessage(error: unknown, fallback: string) {

@@ -9,6 +9,7 @@ import {
   getBoolean,
   getMutationClient,
   getOptionalDateTimeIso,
+  getStoredImageValue,
   getString,
   getSupabaseErrorMessage,
   hasFieldErrors,
@@ -21,7 +22,7 @@ function parseNewsPayload(formData: FormData) {
   const slug = normalizeSlug(getString(formData, "slug"));
   const excerpt = getString(formData, "excerpt");
   const content = getString(formData, "content");
-  const coverImageUrl = getString(formData, "cover_image_url");
+  const coverImageUrl = getStoredImageValue(formData, "cover_image_url");
   const category = getString(formData, "category") as DatabaseEnum<"news_category">;
   const featured = getBoolean(formData, "featured");
   const isPublished = getBoolean(formData, "is_published");
@@ -96,7 +97,7 @@ export async function createNewsPost(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("news_posts")
       .insert(payload)
@@ -136,7 +137,7 @@ export async function updateNewsPost(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("news_posts")
       .update(payload)

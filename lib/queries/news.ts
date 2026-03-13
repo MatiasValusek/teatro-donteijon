@@ -2,10 +2,10 @@ import { cache } from "react";
 import { newsPosts as newsPostsFallback } from "@/data/news";
 import { mapNewsPostRowToNewsPost } from "@/lib/queries/mappers";
 import {
+  type NewsGalleryRow,
   NEWS_GALLERY_COLUMNS,
-  NEWS_POSTS_COLUMNS,
+  PUBLIC_NEWS_POSTS_COLUMNS,
   groupRowsBy,
-  hasRows,
   logSupabaseQueryError,
   sortNewsForDisplay,
 } from "@/lib/queries/shared";
@@ -20,7 +20,7 @@ async function getPublishedNewsRows() {
 
   const { data, error } = await client
     .from("news_posts")
-    .select(NEWS_POSTS_COLUMNS)
+    .select(PUBLIC_NEWS_POSTS_COLUMNS)
     .eq("is_published", true)
     .order("published_at", { ascending: false, nullsFirst: false })
     .order("featured", { ascending: false })
@@ -37,7 +37,7 @@ async function getGalleryMap(postIds: string[]) {
   const client = getSupabaseServerClient();
 
   if (!client || postIds.length === 0) {
-    return new Map<string, Array<{ id: string; news_post_id: string; image_url: string; alt_text: string; sort_order: number; created_at: string }>>();
+    return new Map<string, NewsGalleryRow[]>();
   }
 
   const { data, error } = await client
@@ -58,7 +58,7 @@ export const getPublishedNews = cache(async () => {
   try {
     const postRows = await getPublishedNewsRows();
 
-    if (!hasRows(postRows)) {
+    if (postRows === null) {
       return sortNewsForDisplay(newsPostsFallback);
     }
 
@@ -73,6 +73,34 @@ export const getPublishedNews = cache(async () => {
   }
 });
 
+export const getPublishedNewsSlugs = cache(async () => {
+  const client = getSupabaseServerClient();
+
+  if (!client) {
+    return newsPostsFallback.map((post) => post.slug);
+  }
+
+  try {
+    const { data, error } = await client
+      .from("news_posts")
+      .select("slug")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false, nullsFirst: false })
+      .order("featured", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      logSupabaseQueryError("getPublishedNewsSlugs", error);
+      return newsPostsFallback.map((post) => post.slug);
+    }
+
+    return (data ?? []).map((row) => row.slug);
+  } catch (error) {
+    logSupabaseQueryError("getPublishedNewsSlugs", error);
+    return newsPostsFallback.map((post) => post.slug);
+  }
+});
+
 export const getNewsBySlug = cache(async (slug: string) => {
   const client = getSupabaseServerClient();
 
@@ -83,17 +111,18 @@ export const getNewsBySlug = cache(async (slug: string) => {
   try {
     const { data: row, error } = await client
       .from("news_posts")
-      .select(NEWS_POSTS_COLUMNS)
+      .select(PUBLIC_NEWS_POSTS_COLUMNS)
       .eq("slug", slug)
       .eq("is_published", true)
       .maybeSingle();
 
-    if (error || !row) {
-      if (error) {
-        logSupabaseQueryError("getNewsBySlug", error);
-      }
-
+    if (error) {
+      logSupabaseQueryError("getNewsBySlug", error);
       return newsPostsFallback.find((post) => post.slug === slug) ?? null;
+    }
+
+    if (!row) {
+      return null;
     }
 
     const { data: galleryRows, error: galleryError } = await client
@@ -105,7 +134,7 @@ export const getNewsBySlug = cache(async (slug: string) => {
 
     if (galleryError) {
       logSupabaseQueryError("getNewsBySlug:gallery", galleryError);
-      return newsPostsFallback.find((post) => post.slug === slug) ?? null;
+      return mapNewsPostRowToNewsPost(row, []);
     }
 
     return mapNewsPostRowToNewsPost(row, galleryRows ?? []);

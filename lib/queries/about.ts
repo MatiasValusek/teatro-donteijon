@@ -1,13 +1,19 @@
 import { cache } from "react";
-import { groupGallery as groupGalleryFallback, groupInfo as groupInfoFallback } from "@/data/group";
+import {
+  groupGallery as groupGalleryFallback,
+  groupInfo as groupInfoFallback,
+} from "@/data/group";
 import { members as membersFallback } from "@/data/members";
-import { mapGroupGalleryRowToImage, mapGroupInfoRowToGroupInfo, mapMemberRowToMember } from "@/lib/queries/mappers";
+import {
+  mapGroupGalleryRowToImage,
+  mapGroupInfoRowToGroupInfo,
+  mapMemberRowToMember,
+} from "@/lib/queries/mappers";
 import {
   GROUP_GALLERY_COLUMNS,
   GROUP_INFO_COLUMNS,
   GROUP_MILESTONES_COLUMNS,
   MEMBERS_COLUMNS,
-  hasRows,
   logSupabaseQueryError,
   orderGroupInfoFallback,
   sortMembersForDisplay,
@@ -82,15 +88,12 @@ export const getGroupGallery = cache(async () => {
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
 
-    if (error || !hasRows(data)) {
-      if (error) {
-        logSupabaseQueryError("getGroupGallery", error);
-      }
-
+    if (error) {
+      logSupabaseQueryError("getGroupGallery", error);
       return groupGalleryFallback;
     }
 
-    return data.map(mapGroupGalleryRowToImage);
+    return (data ?? []).map(mapGroupGalleryRowToImage);
   } catch (error) {
     logSupabaseQueryError("getGroupGallery", error);
     return groupGalleryFallback;
@@ -112,15 +115,12 @@ export const getMembers = cache(async () => {
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true });
 
-    if (error || !hasRows(data)) {
-      if (error) {
-        logSupabaseQueryError("getMembers", error);
-      }
-
+    if (error) {
+      logSupabaseQueryError("getMembers", error);
       return sortMembersForDisplay(membersFallback);
     }
 
-    return data.map(mapMemberRowToMember);
+    return (data ?? []).map(mapMemberRowToMember);
   } catch (error) {
     logSupabaseQueryError("getMembers", error);
     return sortMembersForDisplay(membersFallback);

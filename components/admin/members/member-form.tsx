@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { AdminActions } from "@/components/admin/admin-actions";
 import { AdminFormSection } from "@/components/admin/admin-form-section";
+import { ImageUploadField } from "@/components/admin/media/image-upload-field";
 import {
   AdminCheckboxField,
   AdminFormNotice,
@@ -60,12 +61,14 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
           error={state.fieldErrors?.bio}
         />
 
-        <AdminInputField
+        <ImageUploadField
           name="image_url"
-          label="URL de imagen"
-          type="url"
+          label="Imagen del integrante"
+          folder="members"
           defaultValue={member?.image_url}
           error={state.fieldErrors?.image_url}
+          previewAlt={member?.name ? `Retrato de ${member.name}` : "Imagen del integrante"}
+          hint="Ideal para retratos o fotos de perfil del elenco y del equipo."
         />
       </AdminFormSection>
 
@@ -76,7 +79,7 @@ export function MemberForm({ member, saved = false }: MemberFormProps) {
         <div className="grid gap-5 md:grid-cols-2">
           <AdminInputField
             name="sort_order"
-            label="sort_order"
+            label="Orden"
             type="number"
             min={0}
             defaultValue={member?.sort_order ?? 0}

@@ -10,6 +10,7 @@ import {
   getInteger,
   getList,
   getMutationClient,
+  getStoredImageValue,
   getString,
   getSupabaseErrorMessage,
   hasFieldErrors,
@@ -24,7 +25,7 @@ function parseWorkPayload(formData: FormData) {
   const fullDescription = getString(formData, "full_description");
   const genre = getString(formData, "genre");
   const director = getString(formData, "director");
-  const coverImageUrl = getString(formData, "cover_image_url");
+  const coverImageUrl = getStoredImageValue(formData, "cover_image_url");
   const cast = getList(formData, "cast");
   const featured = getBoolean(formData, "featured");
   const isPublished = getBoolean(formData, "is_published");
@@ -105,7 +106,7 @@ export async function createWork(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("works")
       .insert(payload)
@@ -145,7 +146,7 @@ export async function updateWork(
   }
 
   try {
-    const client = getMutationClient();
+    const client = await getMutationClient();
     const { data, error } = await client
       .from("works")
       .update(payload)

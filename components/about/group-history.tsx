@@ -56,7 +56,7 @@ export function GroupHistory({ group }: GroupHistoryProps) {
                 src={group.historyImage}
                 alt={`Proceso de ensayo de ${group.name}`}
                 fill
-                sizes="(min-width: 1024px) 500px, 100vw"
+                sizes="(min-width: 1280px) 520px, (min-width: 1024px) 44vw, calc(100vw - 2rem)"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.56))]" />

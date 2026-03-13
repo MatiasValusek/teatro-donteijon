@@ -8,7 +8,7 @@ export const works: Work[] = [
     shortDescription:
       "Una obra sobre el eco de lo que no llega a decirse y el deseo de volver a ocupar la escena.",
     fullDescription:
-      "Dos interpretes regresan a una sala vacia para reconstruir una funcion que nunca termino. El montaje trabaja con memoria, repeticion y pequeñas fracturas afectivas para pensar que queda en pie cuando la funcion termina antes de tiempo.",
+      "Dos interpretes regresan a una sala vacia para reconstruir una funcion que nunca termino. El montaje trabaja con memoria, repeticion y pequenas fracturas afectivas para pensar que queda en pie cuando la funcion termina antes de tiempo.",
     coverImage: "/images/works/poster-aplauso.svg",
     coverAlt: "Poster teatral de Lo que queda del aplauso",
     gallery: [
@@ -84,7 +84,7 @@ export const works: Work[] = [
     slug: "las-brasas-siguen-encendidas",
     title: "Las brasas siguen encendidas",
     shortDescription:
-      "Un laboratorio escenico sobre duelo, comunidad y pequeños rituales de resistencia cotidiana.",
+      "Un laboratorio escenico sobre duelo, comunidad y pequenos rituales de resistencia cotidiana.",
     fullDescription:
       "La obra toma relatos minimos y materiales documentales para pensar que queda vivo despues de una perdida. Su estructura es abierta y puede mutar segun el espacio y el tipo de encuentro con el publico.",
     coverImage: "/images/works/poster-brasas.svg",

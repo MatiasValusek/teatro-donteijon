@@ -1,14 +1,19 @@
-import { cache } from "react";
 import type { TableRow } from "@/types/database";
+import type {
+  AdminContactMessageListItem,
+  AdminReservationListItem,
+} from "@/types/inbox";
+import { getAdminQueryClient } from "@/lib/admin/auth";
 import {
+  CONTACT_MESSAGES_COLUMNS,
   FUNCTIONS_COLUMNS,
   formatArgentinaDateTimeLabel,
   GROUP_INFO_COLUMNS,
   MEMBERS_COLUMNS,
   NEWS_POSTS_COLUMNS,
+  RESERVATIONS_COLUMNS,
   WORKS_COLUMNS,
 } from "@/lib/queries/shared";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export type AdminWorkRow = TableRow<"works">;
 export type AdminFunctionRow = TableRow<"functions">;
@@ -25,26 +30,28 @@ export type AdminNewsListItem = AdminNewsPostRow & {
   publishedAtLabel: string;
 };
 
-export const getAdminDashboardSummary = cache(async () => {
-  const client = getSupabaseServerClient();
+export async function getAdminDashboardSummary() {
+  const client = await getAdminQueryClient();
 
-  if (!client) {
-    return {
-      worksCount: 0,
-      functionsCount: 0,
-      newsCount: 0,
-      membersCount: 0,
-      hasGroupInfo: false,
-    };
-  }
-
-  const [worksResult, functionsResult, newsResult, membersResult, groupResult] =
+  const [
+    worksResult,
+    functionsResult,
+    newsResult,
+    membersResult,
+    groupResult,
+    reservationsResult,
+    contactMessagesResult,
+  ] =
     await Promise.all([
       client.from("works").select("id", { count: "exact", head: true }),
       client.from("functions").select("id", { count: "exact", head: true }),
       client.from("news_posts").select("id", { count: "exact", head: true }),
       client.from("members").select("id", { count: "exact", head: true }),
       client.from("group_info").select("id", { count: "exact", head: true }),
+      client.from("reservations").select("id", { count: "exact", head: true }),
+      client
+        .from("contact_messages")
+        .select("id", { count: "exact", head: true }),
     ]);
 
   return {
@@ -53,15 +60,13 @@ export const getAdminDashboardSummary = cache(async () => {
     newsCount: newsResult.count ?? 0,
     membersCount: membersResult.count ?? 0,
     hasGroupInfo: (groupResult.count ?? 0) > 0,
+    reservationsCount: reservationsResult.count ?? 0,
+    contactMessagesCount: contactMessagesResult.count ?? 0,
   };
-});
+}
 
-export const getAdminWorks = cache(async () => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return [] as AdminWorkRow[];
-  }
+export async function getAdminWorks() {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("works")
@@ -75,14 +80,10 @@ export const getAdminWorks = cache(async () => {
   }
 
   return data ?? [];
-});
+}
 
-export const getAdminWorkById = cache(async (id: string) => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return null;
-  }
+export async function getAdminWorkById(id: string) {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("works")
@@ -95,23 +96,19 @@ export const getAdminWorkById = cache(async (id: string) => {
   }
 
   return data;
-});
+}
 
-export const getAdminWorkOptions = cache(async () => {
+export async function getAdminWorkOptions() {
   const rows = await getAdminWorks();
 
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
   }));
-});
+}
 
-export const getAdminFunctions = cache(async () => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return [] as AdminFunctionListItem[];
-  }
+export async function getAdminFunctions() {
+  const client = await getAdminQueryClient();
 
   const [functionsResult, works] = await Promise.all([
     client
@@ -134,14 +131,10 @@ export const getAdminFunctions = cache(async () => {
       startsAtLabel: formatArgentinaDateTimeLabel(row.starts_at),
     };
   });
-});
+}
 
-export const getAdminFunctionById = cache(async (id: string) => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return null;
-  }
+export async function getAdminFunctionById(id: string) {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("functions")
@@ -154,14 +147,10 @@ export const getAdminFunctionById = cache(async (id: string) => {
   }
 
   return data;
-});
+}
 
-export const getAdminNewsPosts = cache(async () => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return [] as AdminNewsListItem[];
-  }
+export async function getAdminNewsPosts() {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("news_posts")
@@ -179,14 +168,10 @@ export const getAdminNewsPosts = cache(async () => {
       ? formatArgentinaDateTimeLabel(row.published_at)
       : "Sin fecha",
   }));
-});
+}
 
-export const getAdminNewsPostById = cache(async (id: string) => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return null;
-  }
+export async function getAdminNewsPostById(id: string) {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("news_posts")
@@ -199,14 +184,10 @@ export const getAdminNewsPostById = cache(async (id: string) => {
   }
 
   return data;
-});
+}
 
-export const getAdminMembers = cache(async () => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return [] as AdminMemberRow[];
-  }
+export async function getAdminMembers() {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("members")
@@ -219,14 +200,10 @@ export const getAdminMembers = cache(async () => {
   }
 
   return data ?? [];
-});
+}
 
-export const getAdminMemberById = cache(async (id: string) => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return null;
-  }
+export async function getAdminMemberById(id: string) {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("members")
@@ -239,14 +216,10 @@ export const getAdminMemberById = cache(async (id: string) => {
   }
 
   return data;
-});
+}
 
-export const getAdminGroupInfo = cache(async () => {
-  const client = getSupabaseServerClient();
-
-  if (!client) {
-    return null as AdminGroupInfoRow | null;
-  }
+export async function getAdminGroupInfo() {
+  const client = await getAdminQueryClient();
 
   const { data, error } = await client
     .from("group_info")
@@ -260,4 +233,79 @@ export const getAdminGroupInfo = cache(async () => {
   }
 
   return data;
-});
+}
+
+export async function getAdminReservations(): Promise<AdminReservationListItem[]> {
+  const client = await getAdminQueryClient();
+
+  const [reservationsResult, functionsResult, worksResult] = await Promise.all([
+    client
+      .from("reservations")
+      .select(RESERVATIONS_COLUMNS)
+      .order("created_at", { ascending: false }),
+    client.from("functions").select("id, starts_at, venue_name"),
+    client.from("works").select("id, title"),
+  ]);
+
+  if (reservationsResult.error) {
+    throw reservationsResult.error;
+  }
+
+  if (functionsResult.error) {
+    throw functionsResult.error;
+  }
+
+  if (worksResult.error) {
+    throw worksResult.error;
+  }
+
+  const worksById = new Map(
+    (worksResult.data ?? []).map((row) => [row.id, row.title]),
+  );
+  const functionsById = new Map(
+    (functionsResult.data ?? []).map((row) => [
+      row.id,
+      `${formatArgentinaDateTimeLabel(row.starts_at)} - ${row.venue_name}`,
+    ]),
+  );
+
+  return (reservationsResult.data ?? []).map((row) => ({
+    id: row.id,
+    functionId: row.function_id,
+    workId: row.work_id,
+    workTitle: worksById.get(row.work_id) ?? "Obra sin asociar",
+    functionLabel:
+      functionsById.get(row.function_id) ?? "Funcion sin datos visibles",
+    fullName: row.full_name,
+    email: row.email,
+    phone: row.phone,
+    quantity: row.quantity,
+    message: row.message,
+    status: row.status,
+    createdAtLabel: formatArgentinaDateTimeLabel(row.created_at),
+  }));
+}
+
+export async function getAdminContactMessages(): Promise<
+  AdminContactMessageListItem[]
+> {
+  const client = await getAdminQueryClient();
+
+  const { data, error } = await client
+    .from("contact_messages")
+    .select(CONTACT_MESSAGES_COLUMNS)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    fullName: row.full_name,
+    email: row.email,
+    subject: row.subject,
+    message: row.message,
+    createdAtLabel: formatArgentinaDateTimeLabel(row.created_at),
+  }));
+}

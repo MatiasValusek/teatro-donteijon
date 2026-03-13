@@ -1,4 +1,9 @@
-export { siteConfig } from "@/data/site";
+export {
+  companyHighlights,
+  contactTopics,
+  siteConfig,
+  socialLinks,
+} from "@/data/site";
 
 export const primaryNavigation = [
   { href: "/", label: "Inicio" },

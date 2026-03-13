@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
-  variant?: "warm" | "soft" | "active" | "archive";
+  variant?: "warm" | "soft" | "active" | "archive" | "success";
   size?: "sm" | "md";
 };
 
@@ -11,6 +11,7 @@ const variantStyles = {
   soft: "border border-white/10 bg-white/6 text-muted-strong",
   active: "border border-orange-300/20 bg-orange-400/10 text-orange-100",
   archive: "border border-white/12 bg-white/8 text-white",
+  success: "border border-emerald-300/20 bg-emerald-400/10 text-emerald-100",
 };
 
 export function Badge({

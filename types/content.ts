@@ -33,7 +33,8 @@ export type FunctionEvent = {
   time: string;
   venueName: string;
   venueAddress: string;
-  reservationUrl: string;
+  reservationUrl: string | null;
+  ticketPriceText?: string | null;
   active: boolean;
 };
 

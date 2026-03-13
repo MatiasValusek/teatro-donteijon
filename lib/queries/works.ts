@@ -2,10 +2,10 @@ import { cache } from "react";
 import { works as worksFallback } from "@/data/works";
 import { mapWorkRowToWork } from "@/lib/queries/mappers";
 import {
+  PUBLIC_WORKS_COLUMNS,
+  type WorkGalleryRow,
   WORK_GALLERY_COLUMNS,
-  WORKS_COLUMNS,
   groupRowsBy,
-  hasRows,
   logSupabaseQueryError,
   sortWorksForDisplay,
 } from "@/lib/queries/shared";
@@ -20,7 +20,7 @@ async function getPublishedWorkRows() {
 
   const { data, error } = await client
     .from("works")
-    .select(WORKS_COLUMNS)
+    .select(PUBLIC_WORKS_COLUMNS)
     .eq("is_published", true)
     .order("featured", { ascending: false })
     .order("sort_order", { ascending: true })
@@ -37,7 +37,7 @@ async function getGalleryMap(workIds: string[]) {
   const client = getSupabaseServerClient();
 
   if (!client || workIds.length === 0) {
-    return new Map<string, Array<{ id: string; work_id: string; image_url: string; alt_text: string; sort_order: number; created_at: string }>>();
+    return new Map<string, WorkGalleryRow[]>();
   }
 
   const { data, error } = await client
@@ -58,7 +58,7 @@ export const getPublishedWorks = cache(async () => {
   try {
     const workRows = await getPublishedWorkRows();
 
-    if (!hasRows(workRows)) {
+    if (workRows === null) {
       return sortWorksForDisplay(worksFallback);
     }
 
@@ -68,6 +68,34 @@ export const getPublishedWorks = cache(async () => {
   } catch (error) {
     logSupabaseQueryError("getPublishedWorks", error);
     return sortWorksForDisplay(worksFallback);
+  }
+});
+
+export const getPublishedWorkSlugs = cache(async () => {
+  const client = getSupabaseServerClient();
+
+  if (!client) {
+    return worksFallback.map((work) => work.slug);
+  }
+
+  try {
+    const { data, error } = await client
+      .from("works")
+      .select("slug")
+      .eq("is_published", true)
+      .order("featured", { ascending: false })
+      .order("sort_order", { ascending: true })
+      .order("title", { ascending: true });
+
+    if (error) {
+      logSupabaseQueryError("getPublishedWorkSlugs", error);
+      return worksFallback.map((work) => work.slug);
+    }
+
+    return (data ?? []).map((row) => row.slug);
+  } catch (error) {
+    logSupabaseQueryError("getPublishedWorkSlugs", error);
+    return worksFallback.map((work) => work.slug);
   }
 });
 
@@ -81,17 +109,18 @@ export const getWorkBySlug = cache(async (slug: string) => {
   try {
     const { data: row, error } = await client
       .from("works")
-      .select(WORKS_COLUMNS)
+      .select(PUBLIC_WORKS_COLUMNS)
       .eq("slug", slug)
       .eq("is_published", true)
       .maybeSingle();
 
-    if (error || !row) {
-      if (error) {
-        logSupabaseQueryError("getWorkBySlug", error);
-      }
-
+    if (error) {
+      logSupabaseQueryError("getWorkBySlug", error);
       return worksFallback.find((work) => work.slug === slug) ?? null;
+    }
+
+    if (!row) {
+      return null;
     }
 
     const { data: galleryRows, error: galleryError } = await client
@@ -103,7 +132,7 @@ export const getWorkBySlug = cache(async (slug: string) => {
 
     if (galleryError) {
       logSupabaseQueryError("getWorkBySlug:gallery", galleryError);
-      return worksFallback.find((work) => work.slug === slug) ?? null;
+      return mapWorkRowToWork(row, []);
     }
 
     return mapWorkRowToWork(row, galleryRows ?? []);

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
-import { SiteChrome } from "@/components/layout/site-chrome";
+import { siteMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -14,30 +14,7 @@ const cormorant = Cormorant_Garamond({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://vamosdenuevo.ar"),
-  title: {
-    default: "Vamos de Nuevo | Teatro independiente",
-    template: "%s | Vamos de Nuevo",
-  },
-  description:
-    "Base web de Vamos de Nuevo, grupo de teatro independiente con obras, funciones y novedades.",
-  applicationName: "Vamos de Nuevo",
-  keywords: [
-    "teatro independiente",
-    "Vamos de Nuevo",
-    "obras teatrales",
-    "funciones",
-    "novedades culturales",
-  ],
-  openGraph: {
-    title: "Vamos de Nuevo",
-    description:
-      "Teatro independiente con una presencia digital contemporánea, cálida y móvil primero.",
-    type: "website",
-    locale: "es_AR",
-  },
-};
+export const metadata: Metadata = siteMetadata;
 
 export default function RootLayout({
   children,
@@ -55,7 +32,7 @@ export default function RootLayout({
             <div className="absolute right-[-10rem] top-[18rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(161,28,33,0.18),transparent_65%)] blur-3xl" />
             <div className="absolute bottom-[-14rem] left-[-12rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,176,89,0.14),transparent_68%)] blur-3xl" />
           </div>
-          <SiteChrome>{children}</SiteChrome>
+          {children}
         </div>
       </body>
     </html>

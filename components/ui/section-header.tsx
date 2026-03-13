@@ -35,7 +35,7 @@ export function SectionHeader({
         <p className="section-eyebrow">{eyebrow}</p>
         <Heading
           className={cn(
-            "mt-4 text-4xl leading-none text-white sm:text-5xl lg:text-[3.7rem]",
+            "mt-4 text-balance text-4xl leading-none text-white sm:text-5xl lg:text-[3.7rem]",
             titleClassName,
           )}
         >

@@ -30,7 +30,7 @@ export function WorkFunctions({ work, events }: WorkFunctionsProps) {
           ) : (
             <EmptyState
               title="Actualmente esta obra no tiene funciones programadas."
-              description="La estructura ya contempla la relacion uno a muchos entre obra y funciones. Cuando conectemos Supabase, esta seccion podra reflejar agenda real sin cambiar la UI."
+              description="Cuando haya nuevas fechas activas para esta obra, apareceran automaticamente en esta seccion sin cambiar la estructura de la ficha."
               action={
                 <ButtonLink href="/funciones" variant="secondary" size="md">
                   Ver funciones generales

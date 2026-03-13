@@ -39,7 +39,7 @@ export function PageHero({
           <p className="section-eyebrow">{eyebrow}</p>
           <h1
             className={cn(
-              "mt-5 text-[3rem] leading-[0.92] text-white sm:text-[4.2rem] lg:text-[5rem]",
+              "mt-5 text-balance text-[3rem] leading-[0.92] text-white sm:text-[4.2rem] lg:text-[5rem]",
               titleClassName,
             )}
           >

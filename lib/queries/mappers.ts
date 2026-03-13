@@ -1,17 +1,18 @@
 import type { GroupGalleryImage, GroupInfo, GroupMilestone, Member } from "@/types/about";
 import type { FunctionEvent, NewsPost, Work } from "@/types/content";
 import type {
-  FunctionRow,
   GroupGalleryRow,
   GroupInfoRow,
   GroupMilestoneRow,
   MemberRow,
   NewsGalleryRow,
-  NewsPostRow,
+  PublicFunctionRow,
+  PublicNewsPostRow,
+  PublicWorkRow,
   WorkGalleryRow,
-  WorkRow,
 } from "@/lib/queries/shared";
 import { toArgentinaDateParts } from "@/lib/queries/shared";
+import { resolveStorageImageUrl } from "@/lib/supabase/storage";
 
 export function mapGroupMilestoneRowToMilestone(
   row: GroupMilestoneRow,
@@ -34,8 +35,8 @@ export function mapGroupInfoRowToGroupInfo(
     history: row.history,
     manifesto: row.manifesto,
     highlightedQuote: row.highlighted_quote,
-    heroImage: row.hero_image_url,
-    historyImage: row.history_image_url,
+    heroImage: resolveStorageImageUrl(row.hero_image_url),
+    historyImage: resolveStorageImageUrl(row.history_image_url),
     contactEmail: row.contact_email,
     instagramUrl: row.instagram_url,
     focusAreas: row.focus_areas,
@@ -47,7 +48,7 @@ export function mapGroupInfoRowToGroupInfo(
 export function mapGroupGalleryRowToImage(row: GroupGalleryRow): GroupGalleryImage {
   return {
     id: row.id,
-    src: row.image_url,
+    src: resolveStorageImageUrl(row.image_url),
     alt: row.alt_text,
     caption: row.caption,
     category: row.category,
@@ -60,12 +61,12 @@ export function mapMemberRowToMember(row: MemberRow): Member {
     name: row.name,
     role: row.role,
     bio: row.bio,
-    image: row.image_url,
+    image: resolveStorageImageUrl(row.image_url),
   };
 }
 
 export function mapWorkRowToWork(
-  row: WorkRow,
+  row: PublicWorkRow,
   galleryRows: WorkGalleryRow[],
 ): Work {
   return {
@@ -74,10 +75,10 @@ export function mapWorkRowToWork(
     title: row.title,
     shortDescription: row.short_description,
     fullDescription: row.full_description,
-    coverImage: row.cover_image_url,
+    coverImage: resolveStorageImageUrl(row.cover_image_url),
     coverAlt: row.cover_image_alt,
     gallery: galleryRows.map((image) => ({
-      src: image.image_url,
+      src: resolveStorageImageUrl(image.image_url),
       alt: image.alt_text,
     })),
     genre: row.genre,
@@ -91,7 +92,7 @@ export function mapWorkRowToWork(
   };
 }
 
-export function mapFunctionRowToFunctionEvent(row: FunctionRow): FunctionEvent {
+export function mapFunctionRowToFunctionEvent(row: PublicFunctionRow): FunctionEvent {
   const parts = toArgentinaDateParts(row.starts_at);
 
   return {
@@ -102,12 +103,13 @@ export function mapFunctionRowToFunctionEvent(row: FunctionRow): FunctionEvent {
     venueName: row.venue_name,
     venueAddress: row.venue_address,
     reservationUrl: row.reservation_url,
+    ticketPriceText: row.ticket_price_text,
     active: row.is_active,
   };
 }
 
 export function mapNewsPostRowToNewsPost(
-  row: NewsPostRow,
+  row: PublicNewsPostRow,
   galleryRows: NewsGalleryRow[],
 ): NewsPost {
   const publishedAt = row.published_at ?? row.created_at;
@@ -119,10 +121,10 @@ export function mapNewsPostRowToNewsPost(
     title: row.title,
     excerpt: row.excerpt,
     content: row.content,
-    coverImage: row.cover_image_url,
+    coverImage: resolveStorageImageUrl(row.cover_image_url),
     coverAlt: row.cover_image_alt,
     gallery: galleryRows.map((image) => ({
-      src: image.image_url,
+      src: resolveStorageImageUrl(image.image_url),
       alt: image.alt_text,
     })),
     category: row.category,

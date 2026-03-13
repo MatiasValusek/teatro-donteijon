@@ -44,27 +44,31 @@ export function WorkDetails({ work }: WorkDetailsProps) {
             <p className="mt-3 text-xl text-white">{work.director}</p>
           </Panel>
 
-          <Panel className="rounded-[1.75rem]" variant="inset">
-            <p className="section-eyebrow">
-              Elenco
-            </p>
-            <ul className="mt-4 grid gap-2 text-sm leading-7 text-muted">
-              {work.cast.map((person) => (
-                <li key={person}>{person}</li>
-              ))}
-            </ul>
-          </Panel>
+          {work.cast.length > 0 ? (
+            <Panel className="rounded-[1.75rem]" variant="inset">
+              <p className="section-eyebrow">
+                Elenco
+              </p>
+              <ul className="mt-4 grid gap-2 text-sm leading-7 text-muted">
+                {work.cast.map((person) => (
+                  <li key={person}>{person}</li>
+                ))}
+              </ul>
+            </Panel>
+          ) : null}
 
-          <Panel className="rounded-[1.75rem]" variant="inset">
-            <p className="section-eyebrow">
-              Ficha tecnica
-            </p>
-            <ul className="mt-4 grid gap-2 text-sm leading-7 text-muted">
-              {work.technicalSheet.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          </Panel>
+          {work.technicalSheet.length > 0 ? (
+            <Panel className="rounded-[1.75rem]" variant="inset">
+              <p className="section-eyebrow">
+                Ficha tecnica
+              </p>
+              <ul className="mt-4 grid gap-2 text-sm leading-7 text-muted">
+                {work.technicalSheet.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </Panel>
+          ) : null}
         </aside>
       </Container>
     </section>

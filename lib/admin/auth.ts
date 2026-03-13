@@ -1,50 +1,65 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  getAdminSessionTokensFromHeaders,
+  getAdminSessionTokensFromStore,
+  isAdminAccessConfigured,
+  normalizeAdminRedirectPath,
+  resolveAdminSession,
+} from "@/lib/auth/session";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const adminSessionCookieName = "vdn-admin-session";
+async function readAdminRequestTokens() {
+  const headerStore = await headers();
+  const headerTokens = getAdminSessionTokensFromHeaders(headerStore);
 
-export function isAdminAccessConfigured() {
-  return (process.env.ADMIN_ACCESS_TOKEN ?? "").trim().length > 0;
+  if (headerTokens.accessToken || headerTokens.refreshToken) {
+    return headerTokens;
+  }
+
+  const cookieStore = await cookies();
+  return getAdminSessionTokensFromStore(cookieStore);
+}
+
+export { isAdminAccessConfigured, normalizeAdminRedirectPath };
+
+export async function getAdminSession() {
+  return resolveAdminSession(await readAdminRequestTokens());
 }
 
 export async function hasAdminSession() {
-  const accessToken = (process.env.ADMIN_ACCESS_TOKEN ?? "").trim();
+  const session = await getAdminSession();
 
-  if (!accessToken) {
-    return false;
-  }
-
-  const cookieStore = await cookies();
-
-  return cookieStore.get(adminSessionCookieName)?.value === accessToken;
+  return Boolean(session.user && session.session?.accessToken);
 }
 
 export async function requireAdminSession() {
-  if (!(await hasAdminSession())) {
-    redirect("/admin/login");
+  const session = await getAdminSession();
+
+  if (!session.user || !session.session?.accessToken) {
+    redirect("/login");
   }
+
+  return session;
 }
 
-export async function createAdminSession() {
-  const accessToken = (process.env.ADMIN_ACCESS_TOKEN ?? "").trim();
+export async function getAdminQueryClient() {
+  const session = await requireAdminSession();
+  const accessToken = session.session?.accessToken;
 
   if (!accessToken) {
-    throw new Error("ADMIN_ACCESS_TOKEN is not configured.");
+    redirect("/login");
   }
 
-  const cookieStore = await cookies();
-
-  cookieStore.set(adminSessionCookieName, accessToken, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 8,
+  const client = createSupabaseServerClient({
+    accessToken,
   });
-}
 
-export async function clearAdminSession() {
-  const cookieStore = await cookies();
+  if (!client) {
+    throw new Error(
+      "Supabase no esta configurado. Define NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+    );
+  }
 
-  cookieStore.delete(adminSessionCookieName);
+  return client;
 }

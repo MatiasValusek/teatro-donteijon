@@ -43,8 +43,8 @@ export function WorkGallery({ work }: WorkGalleryProps) {
                   fill
                   sizes={
                     index === 0
-                      ? "(max-width: 639px) 100vw, 100vw"
-                      : "(max-width: 639px) 100vw, 50vw"
+                      ? "(min-width: 1280px) 1120px, (min-width: 640px) calc(100vw - 4rem), calc(100vw - 2rem)"
+                      : "(min-width: 1280px) 540px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
                   }
                   className="object-cover"
                 />

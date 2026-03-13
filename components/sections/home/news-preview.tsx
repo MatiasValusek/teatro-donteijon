@@ -1,12 +1,15 @@
 import { NewsGrid } from "@/components/news/news-grid";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionShell } from "@/components/ui/section-shell";
-import { getRecentNewsPosts } from "@/lib/catalog";
+import type { NewsPost } from "@/types/content";
 
-export function NewsPreviewSection() {
-  const posts = getRecentNewsPosts(3);
+type NewsPreviewSectionProps = {
+  posts: NewsPost[];
+};
 
+export function NewsPreviewSection({ posts }: NewsPreviewSectionProps) {
   return (
     <SectionShell
       eyebrow="Novedades"
@@ -19,7 +22,19 @@ export function NewsPreviewSection() {
       }
     >
       <Container>
-        <NewsGrid posts={posts} />
+        {posts.length > 0 ? (
+          <NewsGrid posts={posts} />
+        ) : (
+          <EmptyState
+            title="Todavia no hay novedades publicadas."
+            description="La seccion editorial ya esta preparada para mostrar estrenos, anuncios y prensa apenas haya contenido visible."
+            action={
+              <ButtonLink href="/contacto" variant="secondary" size="md">
+                Contactar al grupo
+              </ButtonLink>
+            }
+          />
+        )}
       </Container>
     </SectionShell>
   );

@@ -31,7 +31,7 @@ export function ContactInfo({ site, socialLinks }: ContactInfoProps) {
       label: "Telefono",
       value: site.phone ?? "Proximamente",
       href: site.phone ? `tel:${site.phone.replace(/\s+/g, "")}` : undefined,
-      note: "Canal preparado para coordinacion y reservas futuras.",
+      note: "Canal directo para coordinacion, consultas y seguimiento manual.",
     },
     {
       label: "Zona",
@@ -49,9 +49,9 @@ export function ContactInfo({ site, socialLinks }: ContactInfoProps) {
         Vias directas, claras y listas para crecer.
       </h2>
       <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-        La pagina se apoya en una estructura simple para sostener consultas
-        publicas hoy y sumar despues respuestas, reservas o integraciones sin
-        rehacer la interfaz.
+        La pagina se apoya en una estructura simple para recibir consultas
+        publicas y reservas manuales hoy, dejando una base ordenada para sumar
+        despues otras capas operativas sin rehacer la interfaz.
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
